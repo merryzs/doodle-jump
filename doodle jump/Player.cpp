@@ -1,6 +1,8 @@
 #include "Player.h"
 
-Player::Player() {
+Player::Player() 
+	:sprite(texture)
+{
     // ton code d'initialisation
 }
 
@@ -8,6 +10,24 @@ Player::Player() {
 
 void Player::display() {
  
+
+	if(!texture.loadFromFile("assets/miku.png")) {
+		std::cerr << "pas lad!" << std::endl;
+	}
+	
+
+
+
+
+	sprite.setTexture(texture);
+	sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 64, 64 }));
+	sprite.setScale({ 1.f, 1.f });
+	sprite.setPosition(pose);
+
+
+
+
+
 	//set up carre
 	hitbox.setSize({ 64.f, 64.f });
 	hitbox.setFillColor(sf::Color::Green);
@@ -15,7 +35,7 @@ void Player::display() {
 	hitbox.setOutlineThickness(2.f);
 
 	//pose
-	pose = { 375.f, 500.f };
+	pose = { 375.f, 700.f };
 	hitbox.setPosition(pose);
 
 
@@ -47,6 +67,7 @@ void Player::updates(float deltaTime) {
 
 
 	hitbox.setPosition(pose);
+	sprite.setPosition(pose);
 }   
 
 //void Player::handlecolisions() {
@@ -57,5 +78,6 @@ void Player::updates(float deltaTime) {
 void Player::draw(sf::RenderWindow& window) {
 
 	window.draw(hitbox);
+	window.draw(sprite);
 
 }

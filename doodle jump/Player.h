@@ -25,5 +25,8 @@ private:
 
 	sf::Vector2f pose;
 
+	sf::Texture texture;
+	sf::Sprite sprite;
+
 };
 
