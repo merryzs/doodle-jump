@@ -14,9 +14,12 @@ public:
 	virtual void setup() override;
 
 
-private:
 
 	sf::RectangleShape m_playerShape;
 
+
+private:
+
+	sf::Vector2f pose;
 
 };
