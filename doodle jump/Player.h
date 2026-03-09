@@ -28,5 +28,11 @@ private:
 	sf::Texture texture;
 	sf::Sprite sprite;
 
+	//jump test
+	float velocityY = 0.f;
+	bool isGrounded = false;
+	const float gravity = 1500.f;
+	const float jumpStrength = -1000.f;
+	float groundLevel = 700.f;
 };
 

@@ -65,6 +65,21 @@ void Player::updates(float deltaTime) {
 		std::cout << "Player moved right: " << pose.x << std::endl;
 	}
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && isGrounded) {
+		velocityY = jumpStrength;
+		isGrounded = false;
+	}
+
+	//gravity
+	velocityY += gravity * deltaTime;
+	pose.y += velocityY * deltaTime;
+
+	//coli sol
+	if (pose.y >= groundLevel) {
+		pose.y = groundLevel;
+		velocityY = 0.f;
+		isGrounded = true;
+	}
 
 	hitbox.setPosition(pose);
 	sprite.setPosition(pose);
