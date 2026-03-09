@@ -11,6 +11,7 @@ int main()
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
+    sf::Clock clock;
 
 	
 	Player player;
@@ -28,12 +29,14 @@ int main()
                 window.close();
         }
 
+		float deltaTime = clock.restart().asSeconds();
+		player.updates(deltaTime);
+
         //cleae
         window.clear();
 
 
        //update
-        player.updates();
 
 
 

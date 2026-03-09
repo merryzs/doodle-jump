@@ -7,9 +7,13 @@ public:
 
 	Player();
 
-	void updates();
-	void draw(sf::RenderWindow& window);
+
 	void display();
+
+	void updates(float deltaTime);
+	//void handlecolisions();
+	void draw(sf::RenderWindow& window);
+
 	
 	sf::RectangleShape hitbox;
 	sf::Vector2f getPosition() const { return pose; }
@@ -17,7 +21,7 @@ public:
 private:
 
 
-	float speed = 20.f;
+	float speed = 500.f;
 
 	sf::Vector2f pose;
 

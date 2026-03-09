@@ -21,9 +21,9 @@ void Player::display() {
 
 }
 
-void Player::updates() {
+void Player::updates(float deltaTime) {
 
-	float moveDistance = speed;
+	float moveDistance = speed * deltaTime;
 
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
@@ -45,8 +45,13 @@ void Player::updates() {
 		std::cout << "Player moved right: " << pose.x << std::endl;
 	}
 
+
 	hitbox.setPosition(pose);
 }   
+
+//void Player::handlecolisions() {
+//	// Ton code de gestion des collisions
+//}
 
 
 void Player::draw(sf::RenderWindow& window) {
