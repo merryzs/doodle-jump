@@ -19,6 +19,12 @@
     <Filter Include="Fichiers sources\Player cpp">
       <UniqueIdentifier>{2e61614b-1984-4d64-ab24-60d2589101ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\player\physic">
+      <UniqueIdentifier>{2d5edcf4-8366-46a2-95e0-46b362ea3629}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Player cpp\physic">
+      <UniqueIdentifier>{22e2eb19-671e-46b4-879a-b5c9fb39e471}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -27,12 +33,24 @@
     <ClCompile Include="Player.cpp">
       <Filter>Fichiers sources\Player cpp</Filter>
     </ClCompile>
+    <ClCompile Include="Setup.cpp">
+      <Filter>Fichiers sources\Player cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Draw.cpp">
+      <Filter>Fichiers sources\Player cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
+      <Filter>Fichiers d%27en-tête\player</Filter>
+    </ClInclude>
+    <ClInclude Include="Setup.h">
+      <Filter>Fichiers d%27en-tête\player</Filter>
+    </ClInclude>
+    <ClInclude Include="Draw.h">
       <Filter>Fichiers d%27en-tête\player</Filter>
     </ClInclude>
   </ItemGroup>

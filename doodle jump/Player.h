@@ -1,4 +1,6 @@
 #pragma once
+#include "lib.h"
+
 class Player
 {
 public:
@@ -10,5 +12,7 @@ public:
 	virtual void setup();
 
 private:
+
+
 };
 
