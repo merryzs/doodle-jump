@@ -7,13 +7,19 @@ public:
 
 	Player();
 
-	virtual void updates(float deltaTime);
-	virtual void draw(sf::RenderWindow& window);
-	virtual void setups();
+	void updates();
+	void draw(sf::RenderWindow& window);
+	void display();
 	
+	sf::RectangleShape hitbox;
+	sf::Vector2f getPosition() const { return pose; }
 
 private:
 
+
+	float speed = 20.f;
+
+	sf::Vector2f pose;
 
 };
 

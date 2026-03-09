@@ -1,20 +1,24 @@
 #include "lib.h"
-#include "Draw.h"
 #include "Player.h"
-#include "Setup.h"
 
 int main()
 {
 
 
     sf::RenderWindow window(sf::VideoMode({ 750, 1050 }), "SFML works!");
+	window.setFramerateLimit(60);  
+
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
 
-	Draw draws;
-	Setup setup;
 	
+	Player player;
+
+
+
+
+    player.display();
 
     while (window.isOpen())
     {
@@ -27,9 +31,14 @@ int main()
         //cleae
         window.clear();
 
-        setup.setups();
+
+       //update
+        player.updates();
+
+
+
         //draw
-		setup.draw(window);
+		player.draw(window);
 
 
 		//display

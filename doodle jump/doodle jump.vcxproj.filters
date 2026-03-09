@@ -36,27 +36,9 @@
     <ClCompile Include="Player.cpp">
       <Filter>Fichiers sources\Player cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Setup.cpp">
-      <Filter>Fichiers sources\Player cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Draw.cpp">
-      <Filter>Fichiers sources\Player cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="update.cpp">
-      <Filter>Fichiers sources\Player cpp</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
-      <Filter>Fichiers d%27en-tête\player</Filter>
-    </ClInclude>
-    <ClInclude Include="Setup.h">
-      <Filter>Fichiers d%27en-tête\player</Filter>
-    </ClInclude>
-    <ClInclude Include="Draw.h">
-      <Filter>Fichiers d%27en-tête\player</Filter>
-    </ClInclude>
-    <ClInclude Include="update.h">
       <Filter>Fichiers d%27en-tête\player</Filter>
     </ClInclude>
     <ClInclude Include="lib.h">
