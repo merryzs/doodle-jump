@@ -1,12 +1,7 @@
 #include "Draw.h"
-#include "Setup.h"
 
-Draw::Draw()
-{
-}
+Draw::Draw() {}  // si tu as un Player membre ici
 
-void Draw::draw(sf::RenderWindow& window)
-{
-	//dessiner le carre vert
-	window.draw(Setup::m_playerShape);
+void Draw::draw(sf::RenderWindow& window) {
+   // window.draw(hitbox);
 }

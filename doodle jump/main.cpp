@@ -7,13 +7,14 @@ int main()
 {
 
 
-    sf::RenderWindow window(sf::VideoMode({ 200, 200 }), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode({ 750, 1050 }), "SFML works!");
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
 
 	Draw draws;
-
+	Setup setup;
+	
 
     while (window.isOpen())
     {
@@ -23,8 +24,15 @@ int main()
                 window.close();
         }
 
+        //cleae
         window.clear();
-        window.draw(draws);
+
+        setup.setups();
+        //draw
+		setup.draw(window);
+
+
+		//display
         window.display();
     }
 }

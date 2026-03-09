@@ -10,6 +10,9 @@ public:
 
 private:
 
+	float speed = 200.f;
+
+
 
 };
 

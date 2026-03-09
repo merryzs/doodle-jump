@@ -9,7 +9,7 @@ public:
 
 	virtual void updates(float deltaTime);
 	virtual void draw(sf::RenderWindow& window);
-	virtual void setup();
+	virtual void setups();
 	
 
 private:

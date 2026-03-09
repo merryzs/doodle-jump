@@ -11,11 +11,12 @@ public:
 
 	Setup();
 
-	virtual void setup() override;
+	virtual void setups() override;
+	virtual void draw(sf::RenderWindow& window) override;
 
 
 
-	sf::RectangleShape m_playerShape;
+	sf::RectangleShape hitbox;
 
 
 private:
