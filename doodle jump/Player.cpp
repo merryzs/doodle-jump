@@ -11,7 +11,7 @@ Player::Player()
 void Player::display() {
  
 
-	if(!texture.loadFromFile("assets/miku.png")) {
+	if(!texture.loadFromFile("assets/mikus.png")) {
 		std::cerr << "pas lad!" << std::endl;
 	}
 	
@@ -29,7 +29,7 @@ void Player::display() {
 
 
 	//set up carre
-	hitbox.setSize({ 64.f, 64.f });
+	hitbox.setSize({ 256.f, 256.f });
 	hitbox.setFillColor(sf::Color::Green);
 	hitbox.setOutlineColor(sf::Color::Red);
 	hitbox.setOutlineThickness(2.f);
