@@ -11,6 +11,8 @@ public:
 	void display();
 
 	void updates(float deltaTime);
+	void warp();
+	
 	//void handlecolisions();
 	void draw(sf::RenderWindow& window);
 
@@ -34,5 +36,10 @@ private:
 	const float gravity = 1500.f;
 	const float jumpStrength = -1000.f;
 	float groundLevel = 700.f;
+
+
+	float Border_left = -64.f;
+	float Border_Right = 750.f;
+
 };
 

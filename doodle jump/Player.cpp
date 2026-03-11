@@ -46,6 +46,8 @@ void Player::updates(float deltaTime) {
 	float moveDistance = speed * deltaTime;
 
 
+
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
 		
 		
@@ -65,10 +67,12 @@ void Player::updates(float deltaTime) {
 		std::cout << "Player moved right: " << pose.x << std::endl;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && isGrounded) {
+	if (isGrounded ==  true) {
 		velocityY = jumpStrength;
 		isGrounded = false;
 	}
+
+	
 
 	//gravity
 	velocityY += gravity * deltaTime;
@@ -84,6 +88,34 @@ void Player::updates(float deltaTime) {
 	hitbox.setPosition(pose);
 	sprite.setPosition(pose);
 }   
+
+void Player::warp() 
+{
+
+	float Border_Left = -64.f;
+	float Border_Right = 750.f;
+
+	if (pose.x <= Border_Left)
+	{
+		pose.x = 740; 
+		hitbox.setPosition(pose);
+
+		std::cout << "se tp a droite" << std::endl;
+
+	}
+
+	if (pose.x >= Border_Right)
+	{
+		pose.x = -50;
+		hitbox.setPosition(pose);
+
+		std::cout << "se tp a gauche" << std::endl;
+	}
+
+
+
+}
+
 
 //void Player::handlecolisions() {
 //	// Ton code de gestion des collisions

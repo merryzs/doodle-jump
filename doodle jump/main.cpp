@@ -32,6 +32,8 @@ int main()
 		float deltaTime = clock.restart().asSeconds();
 		player.updates(deltaTime);
 
+        player.warp();
+
         //cleae
         window.clear();
 
