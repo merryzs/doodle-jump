@@ -107,14 +107,31 @@ void Game::update()
 
     player.update();
 
-    if (player.getY() < 150)
+    for (auto&platform: platforms)   
+    {            
+        if (player.checkCollisions(platform)) player.jump();
+    }
+
+    const float scrollLimit = 150.f;
+
+    if (player.getY() < scrollLimit)
     {
-        for (auto&platform: platforms)
+        float offset = scrollLimit - player.getY();
+        player.setY(scrollLimit);
+        for (auto& platform : platforms)
         {
-            platform.move({ 0.f, -player.getDY() });
+            platform.move({ 0.f, offset });
         }
     }
 
+    for (size_t i = 0; i < platforms.size(); ++i)
+    {
+        if (platforms[i].getPosition().y > screen_height)
+        {
+            platforms.erase(platforms.begin() + i);
+            spawnPlatform(platforms, -14.f);
+        }
+    }
 }
 
 void Game::render()

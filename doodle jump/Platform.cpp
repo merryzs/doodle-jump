@@ -4,7 +4,7 @@ Platform::Platform(sf::Vector2f position, sf::Vector2f size)
 {
     shape.setPosition(position);
     shape.setSize(size);
-    shape.setFillColor(sf::Color(120, 120, 120));
+    shape.setFillColor(sf::Color::Red);
 }
 
 void Platform::draw(sf::RenderWindow& window) const
