@@ -75,10 +75,12 @@ int main()
 
     
   
-    
+    sf::Clock clock;
         
         while (window.isOpen())
         {
+            float dt = clock.restart().asSeconds();
+
             while (const std::optional event = window.pollEvent())
             {
                 if (event->is<sf::Event::Closed>())
@@ -99,6 +101,8 @@ int main()
             for (auto& p : platforms)
                 p.move({ 0.f, offset });
         }
+        for (auto& p : platforms)
+            p.update(dt);
 
         
         for (size_t i = 0; i < platforms.size();)
