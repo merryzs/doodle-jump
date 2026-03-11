@@ -70,8 +70,13 @@ void Player::updates(float deltaTime) {
 	if (isGrounded ==  true) {
 		velocityY = jumpStrength;
 		isGrounded = false;
+
+		std::cout << "jump" << std::endl;
+
+
 	}
 
+	
 	
 
 	//gravity

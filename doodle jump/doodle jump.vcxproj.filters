@@ -28,6 +28,12 @@
     <Filter Include="Fichiers d%27en-tête\gen">
       <UniqueIdentifier>{ebda3175-6694-4ac9-82ec-2f63adc2e03b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\props and mob">
+      <UniqueIdentifier>{c923bdb1-d680-421a-b130-022cb901951b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\props and mob">
+      <UniqueIdentifier>{2358cd84-7246-4035-b8cf-fb40cf5349bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
