@@ -1,4 +1,12 @@
 #include "lib.h"
+#include "Game.h"
+
+int main()
+{
+    Game game;
+    game.run();
+
+    return 0;
 #include "Player.h"
 
 int main()
