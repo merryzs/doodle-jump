@@ -3,11 +3,7 @@
 #include <random>
 #include <iostream>
 #include "Platform.h"
-
-
-static std::mt19937 rng(std::random_device{}());
-static std::uniform_int_distribution<int> sideDist(0, 1);
-
+#include "PlatformType.h"
 
 const float SCREEN_WIDTH = 1200.f;
 const float SCREEN_HEIGHT = 1600.f;
@@ -29,11 +25,19 @@ float randomPlatformX(float platformWidth)
     }
 }
 
-
 void spawnPlatform(std::vector<Platform>& platforms, float y, float width = 225.f, float height = 10.f)
 {
     float x = randomPlatformX(width);
-    platforms.emplace_back(sf::Vector2f(x, y), sf::Vector2f(width, height));
+
+    PlatformType type = randomPlatformType();
+
+    platforms.emplace_back(
+        sf::Vector2f(x, y),
+        sf::Vector2f(width, height),
+        type
+    );
+
+    
 }
 
 int main()

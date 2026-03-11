@@ -1,10 +1,22 @@
 #include "Platform.h"
+#include "PlatformType.h"
 
-Platform::Platform(sf::Vector2f position, sf::Vector2f size)
+Platform::Platform(sf::Vector2f position, sf::Vector2f size, PlatformType type)
+	:type(type)
 {
+	
     shape.setPosition(position);
     shape.setSize(size);
-    shape.setFillColor(sf::Color(120, 120, 120));
+    shape.setFillColor(colorFromType(type));
+}
+
+void Platform::breakPlatform()
+{
+    if (type == PlatformType::Breakable && !isBroken)
+    {
+        isBroken = true;
+        shape.setFillColor(sf::Color(128, 0, 0));
+    }
 }
 
 void Platform::draw(sf::RenderWindow& window) const
