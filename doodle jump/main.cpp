@@ -1,10 +1,25 @@
-#include <SFML/Graphics.hpp>
+#include "lib.h"
+#include "Player.h"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode({ 200, 200 }), "SFML works!");
+
+
+    sf::RenderWindow window(sf::VideoMode({ 750, 1050 }), "SFML works!");
+	window.setFramerateLimit(60);  
+
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
+
+    sf::Clock clock;
+
+	
+	Player player;
+
+
+
+
+    player.display();
 
     while (window.isOpen())
     {
@@ -14,8 +29,24 @@ int main()
                 window.close();
         }
 
+		float deltaTime = clock.restart().asSeconds();
+		player.updates(deltaTime);
+
+        player.warp();
+
+        //cleae
         window.clear();
-        window.draw(shape);
+
+
+       //update
+
+
+
+        //draw
+		player.draw(window);
+
+
+		//display
         window.display();
     }
 }

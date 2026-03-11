@@ -25,6 +25,15 @@
     <Filter Include="Fichiers sources\Player cpp\physic">
       <UniqueIdentifier>{22e2eb19-671e-46b4-879a-b5c9fb39e471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\gen">
+      <UniqueIdentifier>{ebda3175-6694-4ac9-82ec-2f63adc2e03b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\props and mob">
+      <UniqueIdentifier>{c923bdb1-d680-421a-b130-022cb901951b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\props and mob">
+      <UniqueIdentifier>{2358cd84-7246-4035-b8cf-fb40cf5349bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -33,25 +42,13 @@
     <ClCompile Include="Player.cpp">
       <Filter>Fichiers sources\Player cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Setup.cpp">
-      <Filter>Fichiers sources\Player cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Draw.cpp">
-      <Filter>Fichiers sources\Player cpp</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lib.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Fichiers d%27en-tête\player</Filter>
     </ClInclude>
-    <ClInclude Include="Setup.h">
-      <Filter>Fichiers d%27en-tête\player</Filter>
-    </ClInclude>
-    <ClInclude Include="Draw.h">
-      <Filter>Fichiers d%27en-tête\player</Filter>
+    <ClInclude Include="lib.h">
+      <Filter>Fichiers d%27en-tête\gen</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
