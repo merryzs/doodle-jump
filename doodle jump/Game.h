@@ -7,6 +7,13 @@ class Game
 {
 private:
 
+
+    void spawnPlatform(std::vector<Platform>& platforms, float y);
+    void processEvents();
+    void update();
+    void render();
+    void reset();
+
     sf::RenderWindow window;
 
     Player player;
@@ -14,6 +21,8 @@ private:
 
     sf::Texture backgroundTexture;
     sf::Sprite background;
+
+    sf::Clock clock;
 
     int score;
 
@@ -23,11 +32,5 @@ public:
 
     void run();
 
-private:
 
-    void spawnPlatform(std::vector<Platform>& platforms, float y);
-    void processEvents();
-    void update();
-    void render();
-    void reset();
 };

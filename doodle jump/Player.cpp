@@ -35,7 +35,7 @@ void Player::display() {
 	hitbox.setOutlineThickness(2.f);
 
 	//pose
-	pose = { 375.f, 700.f };
+	pose = { 375.f, 500.f };
 	hitbox.setPosition(pose);
 
 
@@ -127,7 +127,8 @@ void Player::warp()
 //}
 
 
-void Player::draw(sf::RenderWindow& window) {
+void Player::draw(sf::RenderWindow& window)
+{
 
 	window.draw(hitbox);
 	window.draw(sprite);

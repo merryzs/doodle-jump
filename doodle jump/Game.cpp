@@ -3,9 +3,10 @@
 
 static std::mt19937 rng(std::random_device{}());
 static std::uniform_int_distribution<int> sideDist(0, 1);
-const float screen_width = 500.f;
-const float screen_height = 700.f;
+const float screen_width = 750.f;
+const float screen_height = 1050.f;
 
+Player player;
 
 float randomPlatformX(float platformWidth)
 {
@@ -22,6 +23,8 @@ float randomPlatformX(float platformWidth)
         return dist(rng);
     }
 }
+
+
 
 
 void Game::spawnPlatform(std::vector<Platform>& platforms, float y)
@@ -48,7 +51,7 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y)
 }
 
 
-Game::Game() : window(sf::VideoMode({ 500,700 }), "Doodle Jump"), backgroundTexture("images/background.png"), background(backgroundTexture)
+Game::Game() : window(sf::VideoMode({ 750,1050 }), "Doodle Jump"), backgroundTexture("images/background.png"), background(backgroundTexture)
 {
     window.setFramerateLimit(60);
 
@@ -70,6 +73,8 @@ Game::Game() : window(sf::VideoMode({ 500,700 }), "Doodle Jump"), backgroundText
     {
         spawnPlatform(platforms, startY - i * spacing);
     }
+
+    player.display();
 
 }
 
@@ -99,43 +104,18 @@ void Game::processEvents()
 
 void Game::update()
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)||sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
-        player.moveLeft();
+    float deltaTime = clock.restart().asSeconds();
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ||sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-        player.moveRight();
+    player.updates(deltaTime);
+    player.warp();
 
-    player.update();
-
-    for (auto&platform: platforms)   
-    {            
-        if (player.checkCollisions(platform)) player.jump();
-    }
-
-    const float scrollLimit = 150.f;
-
-    if (player.getY() < scrollLimit)
-    {
-        float offset = scrollLimit - player.getY();
-        player.setY(scrollLimit);
-        for (auto& platform : platforms)
-        {
-            platform.move({ 0.f, offset });
-        }
-    }
-
-    for (size_t i = 0; i < platforms.size(); ++i)
-    {
-        if (platforms[i].getPosition().y > screen_height)
-        {
-            platforms.erase(platforms.begin() + i);
-            spawnPlatform(platforms, -14.f);
-        }
-    }
 }
 
 void Game::render()
 {
+
+   
+    
     window.clear();
 
     window.draw(background);
