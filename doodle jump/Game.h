@@ -25,7 +25,7 @@ public:
 
 private:
 
-    void spawnPlatform(std::vector<Platform>& platforms, float y, float width, float height);
+    void spawnPlatform(std::vector<Platform>& platforms, float y);
     void processEvents();
     void update();
     void render();

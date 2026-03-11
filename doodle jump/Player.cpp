@@ -1,12 +1,12 @@
 #include "Player.h"
 
-Player::Player() : texture("images/doodle.png"), sprite(texture)
+Player::Player() : playerTexture("images/doodle.png"), playerSprite(playerTexture)
 {
     x = 250.f;
     y = 150.f;
     dy = 0;
 
-    sprite.setPosition({ x, y });
+    playerSprite.setPosition({ x, y });
 }
 
 void Player::update()
@@ -14,7 +14,7 @@ void Player::update()
     dy += 0.2f;
     y += dy;
 
-    sprite.setPosition({ x, y });
+    playerSprite.setPosition({ x, y });
 }
 
 void Player::jump()
@@ -49,5 +49,5 @@ float Player::getDY()
 
 void Player::draw(sf::RenderWindow& window)
 {
-    window.draw(sprite);
+    window.draw(playerSprite);
 }

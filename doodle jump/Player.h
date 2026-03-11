@@ -5,8 +5,7 @@ class Player
 {
 private:
 
-    sf::Sprite sprite;
-    sf::Texture texture;
+    sf::Texture playerTexture;
 
     float x;
     float y;
@@ -14,7 +13,7 @@ private:
 
 public:
 
-    Player();
+    Player();    sf::Sprite playerSprite;
 
     void update();
     void jump();

@@ -24,10 +24,13 @@ float randomPlatformX(float platformWidth)
 }
 
 
-void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width = 225.f, float height = 10.f)
+void Game::spawnPlatform(std::vector<Platform>& platforms, float y)
 {
+    float width = 68.f;
+    float height = 14.f;
+    
     float x = randomPlatformX(width);
-    platforms.emplace_back(sf::Vector2f(x, y), sf::Vector2f(68.f, 14.f));
+    platforms.emplace_back(sf::Vector2f(x, y), sf::Vector2f(width, height));
 
     for (size_t i = 0; i < platforms.size();)
     {
@@ -61,9 +64,6 @@ Game::Game() : window(sf::VideoMode({ 500,700 }), "Doodle Jump"), backgroundText
         std::cerr << "Impossible de charger la police\n";
 
 
-    std::vector<Platform> platforms;
-
-
     float spacing = 150.f;
     float startY = screen_height - 50.f; // sol
     for (int i = 0; i < 10; i++)
@@ -71,12 +71,7 @@ Game::Game() : window(sf::VideoMode({ 500,700 }), "Doodle Jump"), backgroundText
         spawnPlatform(platforms, startY - i * spacing);
     }
 
-
-    float playerY = screen_height - 100.f;
-    float playerVelocityY = 0.f;
-    const float gravity = 1200.f;
-
-    }
+}
 
 
 
@@ -104,10 +99,10 @@ void Game::processEvents()
 
 void Game::update()
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)||sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
         player.moveLeft();
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ||sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
         player.moveRight();
 
     player.update();
@@ -124,7 +119,7 @@ void Game::update()
 
 void Game::render()
 {
-    window.clear(sf::Color::Black);
+    window.clear();
 
     window.draw(background);
 
