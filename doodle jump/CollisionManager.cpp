@@ -18,17 +18,17 @@ void CollisionManager::handle(Player& player, std::vector<Platform>& platforms)
 
         if (auto inter = playerRect.findIntersection(platRect))
         {
-            // collision verticale
+            
             if (inter->size.y < inter->size.x && player.getVelocityY() > 0.f)
             {
-                // BREAK
+                
                 if (platform.getType() == PlatformType::Breakable)
                 {
                     platform.breakPlatform();
                     continue;
                 }
 
-                // BOUNCY
+                
                 if (platform.getType() == PlatformType::Bouncy)
                 {
                     player.setVelocityY(-1200.f);
@@ -36,7 +36,7 @@ void CollisionManager::handle(Player& player, std::vector<Platform>& platforms)
                     continue;
                 }
 
-                // NORMAL
+                
                 player.setPose({
                     pPos.x,
                     platRect.position.y - pSize.y

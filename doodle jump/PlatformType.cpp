@@ -11,9 +11,9 @@ PlatformType randomPlatformType()
     int p = percentDist(rng);
 
     if (p < 60) return PlatformType::Normal;// 60
-    else if (p < 85) return PlatformType::Breakable;// 25
-    else if (p < 95) return PlatformType::Moving;// 10
-    else return PlatformType::Bouncy; // 5
+    else if (p < 85) return PlatformType::Moving;// 25
+    else if (p < 95) return PlatformType::Bouncy;// 10
+    else return PlatformType::Breakable; // 5
 }
 
 sf::Color colorFromType(PlatformType type)
@@ -21,7 +21,7 @@ sf::Color colorFromType(PlatformType type)
     switch (type)
     {
     case PlatformType::Normal:
-        return sf::Color::White;
+        return sf::Color::Cyan;
     case PlatformType::Moving:
         return sf::Color::Blue;
     case PlatformType::Breakable:

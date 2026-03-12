@@ -6,6 +6,7 @@
 
 const float screen_width = 1080.f;
 const float screen_height = 1080.f;
+const int MAX_PLATFORMS = 8;
 
 Player player;
 
@@ -28,22 +29,67 @@ float randomPlatformX(float platformWidth)
 
 
 
-void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width = 225.f, float height = 10.f)
+void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width, float height)
 {
-    float x = randomPlatformX(width);
+    const int MAX_TRIES = 20;
+    const float MIN_VERTICAL_GAP = 100.f;   
+    const float MIN_HORIZONTAL_GAP = 100.f; 
 
-    PlatformType type = randomPlatformType();
+    for (int i = 0; i < MAX_TRIES; i++)
+    {
+        float x = randomPlatformX(width);
+        PlatformType type = randomPlatformType();
 
+        Platform newPlat({ x, y }, { width, height }, type);
+        sf::FloatRect newBounds = newPlat.getBounds();
+
+        bool overlaps = false;
+
+        for (const auto& p : platforms)
+        {
+            sf::FloatRect other = p.getBounds();
+
+            
+            if (auto inter = newBounds.findIntersection(other))
+            {
+                if (inter->size.x > 0 && inter->size.y > 0)
+                {
+                    overlaps = true;
+                    break;
+                }
+            }
+
+            
+            if (std::abs(p.getPosition().y - y) < MIN_VERTICAL_GAP)
+            {
+                overlaps = true;
+                break;
+            }
+
+           
+            if (std::abs(p.getPosition().x - x) < MIN_HORIZONTAL_GAP)
+            {
+                overlaps = true;
+                break;
+            }
+        }
+
+        if (!overlaps)
+        {
+            platforms.emplace_back(newPlat);
+            return;
+        }
+    }
+
+    
     platforms.emplace_back(
-        sf::Vector2f(x, y),
+        sf::Vector2f(randomPlatformX(width), y),
         sf::Vector2f(width, height),
-        type
+        randomPlatformType()
     );
-
 }
 
-
-Game::Game() : window(sf::VideoMode({ 1080,1080 }), "Doodle Jump"), backgroundTexture("images/background.png"), background(backgroundTexture)
+Game::Game() : window(sf::VideoMode({ 1080,1080 }), "Doodle Jump"), backgroundTexture("images/mini_studio_parti_enfer2.png"), background(backgroundTexture)
 {
     window.setFramerateLimit(60);
 
@@ -85,16 +131,17 @@ void Game::run()
             if (platforms[i].getPosition().y > screen_height)
             {
                 platforms.erase(platforms.begin() + i);
-                spawnPlatform(platforms, -10.f);
+
+                if (platforms.size() < MAX_PLATFORMS)
+                    spawnPlatform(platforms, -10.f);
             }
             else
             {
-                ++i;
+                ++i; 
             }
         }
 
         collisionManager.handle(player, platforms);
-
         render();
     }
 }
@@ -107,7 +154,6 @@ void Game::processEvents()
             window.close();
     }
 }
-
 void Game::update()
 {
     float deltaTime = clock.restart().asSeconds();
@@ -117,8 +163,25 @@ void Game::update()
 
     player.updates(deltaTime);
 
-    player.warp();
+    
+    float cameraTriggerY = screen_height * 0.4f;
 
+    if (player.getPose().y < cameraTriggerY)
+    {
+        float offset = cameraTriggerY - player.getPose().y;
+
+        
+        player.setPose({ player.getPose().x, cameraTriggerY });
+
+        
+        for (auto& p : platforms)
+            p.setPosition({ p.getPosition().x, p.getPosition().y + offset });
+
+        
+        background.move({ 0, offset });
+    }
+
+    player.warp();
 }
 
 void Game::render()

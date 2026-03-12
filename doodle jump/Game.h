@@ -9,7 +9,7 @@ class Game
 private:
 
 
-    void spawnPlatform(std::vector<Platform>& platforms, float y, float width , float height);
+    void spawnPlatform(std::vector<Platform>& platforms, float y, float width = 225.f, float height = 10.f);
     void processEvents();
     void update();
     void render();

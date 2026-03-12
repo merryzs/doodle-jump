@@ -21,6 +21,9 @@ public:
 
     sf::Vector2f getSize() const { return shape.getSize(); }
 
+    void setPosition(const sf::Vector2f& pos) {
+        shape.setPosition(pos);
+    }
 private:
     float bounceTimer = 0.f;
     float speed = 100.f;
