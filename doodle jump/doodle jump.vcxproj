@@ -131,20 +131,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Draw.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlatformType.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Setup.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Draw.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="lib.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlatformType.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Setup.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

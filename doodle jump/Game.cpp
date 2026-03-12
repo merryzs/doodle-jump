@@ -42,7 +42,7 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width 
 }
 
 
-Game::Game() : window(sf::VideoMode({ 1080,1080 }), "Doodle Jump"), backgroundTexture("images/background.png"), background(backgroundTexture)
+Game::Game() : window(sf::VideoMode({ 1080,1080 }), "Doodle Jump"), backgroundTexture("images/mini_studio_parti_enfer2.png"), background(backgroundTexture)
 {
     window.setFramerateLimit(60);
 

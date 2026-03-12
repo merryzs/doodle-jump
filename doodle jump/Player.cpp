@@ -1,76 +1,124 @@
 #include "Player.h"
 
-Player::Player() : playerTexture("images/doodle.png"), playerSprite(playerTexture)
+Player::Player()
+	:sprite(texture)
 {
-    x = 50.f;
-    y = 150.f;
-    dy = 0;
-
-    playerSprite.setPosition({ x, y });
+	// ton code d'initialisation
 }
 
-void Player::update()
-{
-    dy += 0.2f;
-    y += dy;
 
-    if (x > 500.f) x = 0.f;
-    if (x < -60.f) x = 550.f - playerTexture.getSize().x;
 
-    playerSprite.setPosition({ x, y });
+void Player::display() {
+
+
+	if (!texture.loadFromFile("images/doodle.png")) {
+		std::cerr << "pas lad!" << std::endl;
+	}
+
+
+
+
+
+	sprite.setTexture(texture);
+	sprite.setPosition(pose);
+
+	//pose
+	pose = { 375.f, 500.f };
+	hitbox.setPosition(pose);
+
+
 }
 
-void Player::jump()
-{
-    dy = -10;
+void Player::updates(float deltaTime) {
+
+	float moveDistance = speed * deltaTime;
+
+
+
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)||sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
+
+
+		pose.x -= moveDistance;
+
+
+		std::cout << "Player moved left: " << pose.x << std::endl;
+
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
+
+
+		pose.x += moveDistance;
+
+
+		std::cout << "Player moved right: " << pose.x << std::endl;
+	}
+
+	if (isGrounded == true) {
+		velocityY = jumpStrength;
+		isGrounded = false;
+
+		std::cout << "jump" << std::endl;
+
+
+	}
+
+
+
+
+	//gravity
+	velocityY += gravity * deltaTime;
+	pose.y += velocityY * deltaTime;
+
+	//coli sol
+	if (pose.y >= groundLevel) {
+		pose.y = groundLevel;
+		velocityY = 0.f;
+		isGrounded = true;
+	}
+
+	hitbox.setPosition(pose);
+	sprite.setPosition(pose);
 }
 
-void Player::moveLeft()
+void Player::warp()
 {
-    x -= 4;
+
+	float Border_Left = -64.f;
+	float Border_Right = 1080.f;
+
+	if (pose.x <= Border_Left)
+	{
+		pose.x = 1070;
+		hitbox.setPosition(pose);
+
+		std::cout << "se tp a droite" << std::endl;
+
+	}
+
+	if (pose.x >= Border_Right)
+	{
+		pose.x = -50;
+		hitbox.setPosition(pose);
+
+		std::cout << "se tp a gauche" << std::endl;
+	}
+
+
+
 }
 
-void Player::moveRight()
-{
-    x += 4;
-}
 
-float Player::getX()
-{
-    return x;
-}
+//void Player::handlecolisions() {
+//	// Ton code de gestion des collisions
+//}
 
-float Player::getY()
-{
-    return y;
-}
-
-float Player::getDY()
-{
-    return dy;
-}
-
-bool Player::checkCollisions(const Platform& plats)
-{
-    sf::Vector2f platformpos = plats.getPosition();
-    sf::Vector2f platsize(68.f, 14.f);
-
-    float playerLeft = x + 20.f;
-    float playerRight = x + 60.f;
-    float playerBottom = y + 70.f;
-
-    if (playerBottom > platformpos.y &&
-        playerBottom < platformpos.y + platsize.y &&
-        playerRight > platformpos.x &&
-        playerLeft < platformpos.x + platsize.x &&
-        dy > 0)
-    {
-        return true;
-    }
-    return false;
-}
 
 void Player::draw(sf::RenderWindow& window)
 {
-    window.draw(playerSprite);
+
+	window.draw(hitbox);
+	window.draw(sprite);
+
 }
