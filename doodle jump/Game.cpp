@@ -136,24 +136,6 @@ void Game::reset()
     }
 }
 
-void Game::reset()
-{
-    score = 0;
-    gameover = false;
-
-    player = Player();
-
-    platforms.clear();
-
-    float spacing = 150.f;
-    float startY = screen_height - 50.f;
-
-    for (int i = 0; i < 10; i++)
-    {
-        spawnPlatform(platforms, startY - i * spacing);
-    }
-}
-
 
 void Game::run()
 {
@@ -197,12 +179,6 @@ void Game::processEvents()
         window.close();
 }
 
-    if (gameover && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-        reset();
-
-    if (gameover && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-        window.close();
-}
 void Game::update()
 {
     float deltaTime = clock.restart().asSeconds();
