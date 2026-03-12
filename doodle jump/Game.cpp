@@ -1,10 +1,11 @@
 #include "Game.h"
-#include <random>
+#include "Platform.h"
+#include "PlatformType.h"
+#include "lib.h"
+#include "ColisionManager.h"
 
-static std::mt19937 rng(std::random_device{}());
-static std::uniform_int_distribution<int> sideDist(0, 1);
-const float screen_width = 500.f;
-const float screen_height = 700.f;
+const float screen_width = 1080.f;
+const float screen_height = 1080.f;
 
 
 float randomPlatformX(float platformWidth)
@@ -84,6 +85,22 @@ void Game::run()
     {
         processEvents();
         update();
+
+        for (size_t i = 0; i < platforms.size();)
+        {
+            if (platforms[i].getPosition().y > screen_height)
+            {
+                platforms.erase(platforms.begin() + i);
+                spawnPlatform(platforms, -10.f);
+            }
+            else
+            {
+                ++i;
+            }
+        }
+
+        collisionManager.handle(player, platforms);
+
         render();
     }
 }

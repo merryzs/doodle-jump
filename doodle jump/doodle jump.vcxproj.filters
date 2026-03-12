@@ -64,16 +64,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Player.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Platform.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    <ClInclude Include="lib.h">
-      <Filter>Fichiers d%27en-tête\gen</Filter>
-    </ClInclude>
+    <ClInclude Include="Platform.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="lib.h" />
+    <ClInclude Include="PlatformType.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="ColisionManager.h" />
   </ItemGroup>
 </Project>

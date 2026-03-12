@@ -131,12 +131,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ColisionManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlatformType.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ColisionManager.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlatformType.h" />
     <ClCompile Include="Platform.cpp" />

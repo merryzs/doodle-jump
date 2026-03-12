@@ -2,6 +2,7 @@
 #include "lib.h"
 #include "Player.h"
 #include "Platform.h"
+#include "ColisionManager.h"
 
 class Game
 {
@@ -14,6 +15,10 @@ private:
 
     sf::Texture backgroundTexture;
     sf::Sprite background;
+
+    CollisionManager collisionManager;
+
+    sf::Clock clock;
 
     int score;
 

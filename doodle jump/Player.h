@@ -25,23 +25,25 @@ public:
 
 	void updates(float deltaTime);
 	void warp();
-	
-	//void handlecolisions();
+
 	void draw(sf::RenderWindow& window);
 
 	
 	sf::RectangleShape hitbox;
 	sf::Vector2f getPosition() const { return pose; }
 
-    void moveLeft();
-    void moveRight();
+	sf::FloatRect getBounds() const { return hitbox.getGlobalBounds(); }
 
-    float getX();
-    float getY();
-    float getDY();
+	sf::Vector2f getPose() const { return pose; }
+	void setPose(sf::Vector2f p) { pose = p; hitbox.setPosition(p); }
 
-    void setY(float newY) { y = newY; playerSprite.setPosition({ x, y }); }
-    void setX(float newX) { x = newX; playerSprite.setPosition({ x, y }); }
+	float getVelocityY() const { return velocityY; }
+	void setVelocityY(float v) { velocityY = v; }
+
+	bool getGrounded() const { return isGrounded; }
+	void setGrounded(bool g) { isGrounded = g; }
+
+private:
 
     bool checkCollisions(const Platform& plats);
 

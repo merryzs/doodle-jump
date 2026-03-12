@@ -10,6 +10,8 @@ public:
     sf::Vector2f getPosition() const;
     void move(const sf::Vector2f& offset);
 
+    sf::FloatRect getBounds() const { return shape.getGlobalBounds(); }
+
 private:
     sf::RectangleShape shape;
     sf::Texture platformTexture;

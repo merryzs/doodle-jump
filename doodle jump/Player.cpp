@@ -79,16 +79,12 @@ void Player::updates(float deltaTime) {
 	
 	
 
-	//gravity
+	
 	velocityY += gravity * deltaTime;
 	pose.y += velocityY * deltaTime;
 
-	//coli sol
-	if (pose.y >= groundLevel) {
-		pose.y = groundLevel;
-		velocityY = 0.f;
-		isGrounded = true;
-	}
+	if (isGrounded && velocityY > 0)
+		velocityY = 0;
 
 	hitbox.setPosition(pose);
 	sprite.setPosition(pose);
@@ -121,13 +117,8 @@ void Player::warp()
 
 }
 
-
-//void Player::handlecolisions() {
-//	// Ton code de gestion des collisions
-//}
-
-
-void Player::draw(sf::RenderWindow& window) {
+void Player::draw(sf::RenderWindow& window)
+{
 
 	window.draw(hitbox);
 	window.draw(sprite);
