@@ -87,6 +87,7 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width,
     );
 }
 
+
 Game::Game() : window(sf::VideoMode({ 1080,1080 }), "Doodle Jump"), backgroundTexture("images/mini_studio_parti_enfer2.png"), background(backgroundTexture)
 {
     window.setFramerateLimit(60);
@@ -115,6 +116,24 @@ Game::Game() : window(sf::VideoMode({ 1080,1080 }), "Doodle Jump"), backgroundTe
 
     player.display();
 
+}
+
+void Game::reset()
+{
+    score = 0;
+    gameover = false;
+
+    player = Player();
+
+    platforms.clear();
+
+    float spacing = 150.f;
+    float startY = screen_height - 50.f;
+
+    for (int i = 0; i < 10; i++)
+    {
+        spawnPlatform(platforms, startY - i * spacing);
+    }
 }
 
 void Game::reset()
@@ -177,6 +196,13 @@ void Game::processEvents()
     if (gameover && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
         window.close();
 }
+
+    if (gameover && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+        reset();
+
+    if (gameover && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+        window.close();
+}
 void Game::update()
 {
     float deltaTime = clock.restart().asSeconds();
@@ -205,6 +231,12 @@ void Game::update()
     }
 
     player.warp();
+
+    if (player.pose.y > screen_height)
+        gameover = true;
+
+    scoreText.setString("Score: " + std::to_string(score));
+
 }
 
 void Game::render()
