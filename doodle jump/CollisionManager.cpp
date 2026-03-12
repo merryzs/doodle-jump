@@ -2,29 +2,41 @@
 #include "Player.h"
 #include "Platform.h"
 
-void CollisionManager::handle(Player& player, const std::vector<Platform>& platforms)
+void CollisionManager::handle(Player& player, std::vector<Platform>& platforms)
 {
-    
     sf::Vector2f pPos = player.hitbox.getPosition();
     sf::Vector2f pSize = player.hitbox.getSize();
     sf::FloatRect playerRect(pPos, pSize);
 
     player.setGrounded(false);
 
-    for (const auto& platform : platforms)
+    for (auto& platform : platforms)
     {
-        
         sf::Vector2f platPos = platform.getPosition();
-        sf::Vector2f platSize = { platform.getBounds().size.x, platform.getBounds().size.y };
+        sf::Vector2f platSize = platform.getSize();
         sf::FloatRect platRect(platPos, platSize);
 
-        
         if (auto inter = playerRect.findIntersection(platRect))
         {
-            
+            // collision verticale
             if (inter->size.y < inter->size.x && player.getVelocityY() > 0.f)
             {
-                
+                // BREAK
+                if (platform.getType() == PlatformType::Breakable)
+                {
+                    platform.breakPlatform();
+                    continue;
+                }
+
+                // BOUNCY
+                if (platform.getType() == PlatformType::Bouncy)
+                {
+                    player.setVelocityY(-1200.f);
+                    platform.triggerBounce();
+                    continue;
+                }
+
+                // NORMAL
                 player.setPose({
                     pPos.x,
                     platRect.position.y - pSize.y
@@ -33,11 +45,10 @@ void CollisionManager::handle(Player& player, const std::vector<Platform>& platf
                 player.setVelocityY(0.f);
                 player.setGrounded(true);
 
-                // Mettre à jour playerRect
                 pPos = player.getPose();
                 playerRect = sf::FloatRect(pPos, pSize);
-            
             }
         }
     }
 }
+

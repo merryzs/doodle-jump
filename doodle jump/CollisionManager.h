@@ -6,6 +6,6 @@
 class CollisionManager
 {
 	public:
-		void handle(Player& player, const std::vector<Platform>& platforms);
+		void handle(Player& player, std::vector<Platform>& platforms);
 };
 

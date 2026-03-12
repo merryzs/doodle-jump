@@ -16,6 +16,11 @@ public:
 
     sf::FloatRect getBounds() const { return shape.getGlobalBounds(); }
 
+    PlatformType getType() const { return type; }
+    void triggerBounce() { bounceTimer = 0.3f; }
+
+    sf::Vector2f getSize() const { return shape.getSize(); }
+
 private:
     float bounceTimer = 0.f;
     float speed = 100.f;

@@ -34,23 +34,45 @@ void Platform::update(float dt)
 {
     if (isBroken)
     {
-        shape.move({ 0.f, fallSpeed * dt });
+        
+        fallSpeed += 500.f * dt;
+        shape.move({ 0, fallSpeed * dt });
+        return;
     }
-    if (type == PlatformType::Moving)
-    {
-        shape.move({ speed * direction * dt, 0.f });
 
-        if (shape.getPosition().x < 0 ||
-            shape.getPosition().x + shape.getSize().x > 400)
-        {
-            direction *= -1;
-        }
-    }
-    if (type == PlatformType::Bouncy)
+    switch (type)
     {
-        bounceTimer += dt;
-        float scale = 1.f + 0.05f * std::sin(bounceTimer * 10.f);
-        shape.setScale({ scale, 1.f });
+    case PlatformType::Moving:
+    {
+        shape.move({ speed * direction * dt, 0 });
+
+        
+        if (shape.getPosition().x < 0)
+            direction = 1;
+        if (shape.getPosition().x + shape.getSize().x > 1080)
+            direction = -1;
+
+        break;
+    }
+
+    case PlatformType::Bouncy:
+    {
+        
+        if (bounceTimer > 0)
+        {
+            bounceTimer -= dt;
+            float scale = 1.f + std::sin(bounceTimer * 20.f) * 0.2f;
+            shape.setScale({ 1.f, scale });
+        }
+        else
+        {
+            shape.setScale({ 1.f, 1.f });
+        }
+        break;
+    }
+
+    default:
+        break;
     }
 }
 
