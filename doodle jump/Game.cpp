@@ -1,10 +1,10 @@
 #include "Game.h"
-#include <random>
+#include "Platform.h"
+#include "PlatformType.h"
+#include "lib.h"
 
-static std::mt19937 rng(std::random_device{}());
-static std::uniform_int_distribution<int> sideDist(0, 1);
-const float screen_width = 750.f;
-const float screen_height = 1050.f;
+const float screen_width = 1080.f;
+const float screen_height = 1080.f;
 
 Player player;
 
@@ -27,31 +27,22 @@ float randomPlatformX(float platformWidth)
 
 
 
-void Game::spawnPlatform(std::vector<Platform>& platforms, float y)
+void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width = 225.f, float height = 10.f)
 {
-    float width = 68.f;
-    float height = 14.f;
-    
     float x = randomPlatformX(width);
-    platforms.emplace_back(sf::Vector2f(x, y), sf::Vector2f(width, height));
 
-    for (size_t i = 0; i < platforms.size();)
-    {
-        if (platforms[i].getPosition().y > screen_height)
-        {
-            platforms.erase(platforms.begin() + i);
-            spawnPlatform(platforms, -10.f);
-        }
-        else
-        {
-            ++i;
-        }
-    }
+    PlatformType type = randomPlatformType();
+
+    platforms.emplace_back(
+        sf::Vector2f(x, y),
+        sf::Vector2f(width, height),
+        type
+    );
 
 }
 
 
-Game::Game() : window(sf::VideoMode({ 750,1050 }), "Doodle Jump"), backgroundTexture("images/background.png"), background(backgroundTexture)
+Game::Game() : window(sf::VideoMode({ 1080,1080 }), "Doodle Jump"), backgroundTexture("images/background.png"), background(backgroundTexture)
 {
     window.setFramerateLimit(60);
 
@@ -66,9 +57,12 @@ Game::Game() : window(sf::VideoMode({ 750,1050 }), "Doodle Jump"), backgroundTex
     if (!font.openFromFile("C:/Windows/Fonts/arial.ttf"))
         std::cerr << "Impossible de charger la police\n";
 
+    platforms.clear();
 
     float spacing = 150.f;
     float startY = screen_height - 50.f; // sol
+
+
     for (int i = 0; i < 10; i++)
     {
         spawnPlatform(platforms, startY - i * spacing);
@@ -78,17 +72,28 @@ Game::Game() : window(sf::VideoMode({ 750,1050 }), "Doodle Jump"), backgroundTex
 
 }
 
-
-
-
-
-
 void Game::run()
 {
     while (window.isOpen())
     {
         processEvents();
         update();
+
+        for (size_t i = 0; i < platforms.size();)
+        {
+            if (platforms[i].getPosition().y > screen_height)
+            {
+                platforms.erase(platforms.begin() + i);
+                spawnPlatform(platforms, -10.f);
+            }
+            else
+            {
+                ++i;
+            }
+        }
+
+      
+
         render();
     }
 }
@@ -106,22 +111,23 @@ void Game::update()
 {
     float deltaTime = clock.restart().asSeconds();
 
+    for (auto& p : platforms)
+        p.update(deltaTime);
+
     player.updates(deltaTime);
+
     player.warp();
 
 }
 
 void Game::render()
 {
-
-   
-    
     window.clear();
 
     window.draw(background);
 
-    for (auto& p : platforms)
-        p.draw(window);
+    for (const auto& platform : platforms)
+        platform.draw(window);
 
     player.draw(window);
 

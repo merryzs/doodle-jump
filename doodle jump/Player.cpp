@@ -98,11 +98,11 @@ void Player::warp()
 {
 
 	float Border_Left = -64.f;
-	float Border_Right = 750.f;
+	float Border_Right = 1080.f;
 
 	if (pose.x <= Border_Left)
 	{
-		pose.x = 740; 
+		pose.x = 1070; 
 		hitbox.setPosition(pose);
 
 		std::cout << "se tp a droite" << std::endl;
