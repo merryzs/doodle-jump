@@ -39,6 +39,9 @@
     <ClCompile Include="Draw.cpp">
       <Filter>Fichiers sources\Player cpp</Filter>
     </ClCompile>
+    <ClCompile Include="PlatformType.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib.h">
@@ -52,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="Draw.h">
       <Filter>Fichiers d%27en-tête\player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformType.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
