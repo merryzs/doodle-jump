@@ -13,12 +13,20 @@ public:
 	void updates(float deltaTime);
 	void warp();
 
-	//void handlecolisions();
+	
 	void draw(sf::RenderWindow& window);
 
 
 	sf::RectangleShape hitbox;
 	sf::Vector2f getPosition() const { return pose; }
+
+	sf::Vector2f getPose() const { return pose; }
+	void setPose(const sf::Vector2f& p) { pose = p; hitbox.setPosition(p); sprite.setPosition(p); }
+
+	float getVelocityY() const { return velocityY; }
+	void setVelocityY(float v) { velocityY = v; }
+
+	void setGrounded(bool g) { isGrounded = g; }
 
 private:
 

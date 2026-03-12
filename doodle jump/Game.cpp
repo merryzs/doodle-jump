@@ -2,6 +2,7 @@
 #include "Platform.h"
 #include "PlatformType.h"
 #include "lib.h"
+#include "CollisionManager.h"
 
 const float screen_width = 1080.f;
 const float screen_height = 1080.f;
@@ -92,7 +93,7 @@ void Game::run()
             }
         }
 
-      
+        collisionManager.handle(player, platforms);
 
         render();
     }

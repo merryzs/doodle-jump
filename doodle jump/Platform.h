@@ -14,6 +14,8 @@ public:
     void move(const sf::Vector2f& offset);
     void breakPlatform();
 
+    sf::FloatRect getBounds() const { return shape.getGlobalBounds(); }
+
 private:
     float bounceTimer = 0.f;
     float speed = 100.f;

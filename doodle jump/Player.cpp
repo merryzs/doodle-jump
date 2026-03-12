@@ -1,20 +1,20 @@
 #include "Player.h"
 
-Player::Player() 
+Player::Player()
 	:sprite(texture)
 {
-    // ton code d'initialisation
+	
 }
 
 
 
 void Player::display() {
- 
 
-	if(!texture.loadFromFile("assets/miku.png")) {
+
+	if (!texture.loadFromFile("assets/miku.png")) {
 		std::cerr << "pas lad!" << std::endl;
 	}
-	
+
 
 
 
@@ -28,13 +28,13 @@ void Player::display() {
 
 
 
-	//set up carre
+	
 	hitbox.setSize({ 64.f, 64.f });
 	hitbox.setFillColor(sf::Color::Green);
 	hitbox.setOutlineColor(sf::Color::Red);
 	hitbox.setOutlineThickness(2.f);
 
-	//pose
+	
 	pose = { 375.f, 500.f };
 	hitbox.setPosition(pose);
 
@@ -49,11 +49,11 @@ void Player::updates(float deltaTime) {
 
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
-		
-		
+
+
 		pose.x -= moveDistance;
-		
-		
+
+
 		std::cout << "Player moved left: " << pose.x << std::endl;
 
 	}
@@ -67,7 +67,7 @@ void Player::updates(float deltaTime) {
 		std::cout << "Player moved right: " << pose.x << std::endl;
 	}
 
-	if (isGrounded ==  true) {
+	if (isGrounded == true) {
 		velocityY = jumpStrength;
 		isGrounded = false;
 
@@ -76,25 +76,22 @@ void Player::updates(float deltaTime) {
 
 	}
 
-	
-	
 
-	//gravity
+
+
+	
 	velocityY += gravity * deltaTime;
 	pose.y += velocityY * deltaTime;
 
-	//coli sol
-	if (pose.y >= groundLevel) {
-		pose.y = groundLevel;
-		velocityY = 0.f;
-		isGrounded = true;
-	}
+	if (isGrounded && velocityY > 0)
+		velocityY = 0;
+
+	
 
 	hitbox.setPosition(pose);
 	sprite.setPosition(pose);
-}   
-
-void Player::warp() 
+}
+void Player::warp()
 {
 
 	float Border_Left = -64.f;
@@ -102,7 +99,7 @@ void Player::warp()
 
 	if (pose.x <= Border_Left)
 	{
-		pose.x = 1070; 
+		pose.x = 1070;
 		hitbox.setPosition(pose);
 
 		std::cout << "se tp a droite" << std::endl;
@@ -120,12 +117,6 @@ void Player::warp()
 
 
 }
-
-
-//void Player::handlecolisions() {
-//	// Ton code de gestion des collisions
-//}
-
 
 void Player::draw(sf::RenderWindow& window)
 {
