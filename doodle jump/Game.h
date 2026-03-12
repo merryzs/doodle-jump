@@ -9,6 +9,7 @@ private:
 
 
     void spawnPlatform(std::vector<Platform>& platforms, float y, float width , float height);
+    void Handle_Colision();
     void processEvents();
     void update();
     void render();
