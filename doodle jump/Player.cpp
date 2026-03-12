@@ -48,7 +48,7 @@ void Player::updates(float deltaTime) {
 
 
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
 
 
 		pose.x -= moveDistance;
@@ -58,7 +58,7 @@ void Player::updates(float deltaTime) {
 
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
 
 
 		pose.x += moveDistance;

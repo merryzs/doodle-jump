@@ -23,6 +23,12 @@ private:
     sf::Texture backgroundTexture;
     sf::Sprite background;
 
+    sf::Font font;
+    sf::Text scoreText;
+
+    int score = 0;
+    bool gameover = false;
+
     sf::Clock clock;
 
     CollisionManager collisionManager;

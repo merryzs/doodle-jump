@@ -7,8 +7,6 @@
 const float screen_width = 1080.f;
 const float screen_height = 1080.f;
 
-Player player;
-
 float randomPlatformX(float platformWidth)
 {
     float halfScreen = screen_width / 2.f;
@@ -73,6 +71,25 @@ Game::Game() : window(sf::VideoMode({ 1080,1080 }), "Doodle Jump"), backgroundTe
 
 }
 
+void Game::reset()
+{
+    score = 0;
+    gameover = false;
+
+    player = Player();
+
+    platforms.clear();
+
+    float spacing = 150.f;
+    float startY = screen_height - 50.f;
+
+    for (int i = 0; i < 10; i++)
+    {
+        spawnPlatform(platforms, startY - i * spacing);
+    }
+}
+
+
 void Game::run()
 {
     while (window.isOpen())
@@ -106,6 +123,12 @@ void Game::processEvents()
         if (event->is<sf::Event::Closed>())
             window.close();
     }
+
+    if (gameover && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+        reset();
+
+    if (gameover && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+        window.close();
 }
 
 void Game::update()
@@ -119,6 +142,11 @@ void Game::update()
 
     player.warp();
 
+    if (player.pose.y > screen_height)
+        gameover = true;
+
+    scoreText.setString("Score: " + std::to_string(score));
+
 }
 
 void Game::render()
@@ -131,6 +159,18 @@ void Game::render()
         platform.draw(window);
 
     player.draw(window);
+
+    window.draw(scoreText);
+
+    if (gameover)
+    {
+        sf::Text gameOverText(font);
+        gameOverText.setString("GAME OVER\nPress Spacebar to reset\nPress Escape to quit");
+        gameOverText.setCharacterSize(40);
+        gameOverText.setPosition({ 100,300 });
+
+        window.draw(gameOverText);
+    }
 
     window.display();
 }
