@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player()
-	:sprite(texture)
+	:sprite(texture), texture("images/doodle.png")
 {
 	
 }
@@ -11,16 +11,9 @@ Player::Player()
 void Player::display() {
 
 
-	if (!texture.loadFromFile("assets/miku.png")) {
-		std::cerr << "pas lad!" << std::endl;
-	}
-
-
-
-
 
 	sprite.setTexture(texture);
-	sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 64, 64 }));
+	sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 80, 80 }));
 	sprite.setScale({ 1.f, 1.f });
 	sprite.setPosition(pose);
 
@@ -30,8 +23,6 @@ void Player::display() {
 
 	
 	hitbox.setSize({ 64.f, 64.f });
-	hitbox.setFillColor(sf::Color::Green);
-	hitbox.setOutlineColor(sf::Color::Red);
 	hitbox.setOutlineThickness(2.f);
 
 	
@@ -117,7 +108,6 @@ void Player::reset()
 void Player::draw(sf::RenderWindow& window)
 {
 
-	window.draw(hitbox);
 	window.draw(sprite);
 
 }
