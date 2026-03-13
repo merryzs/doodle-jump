@@ -6,7 +6,7 @@
 
 const float screen_width = 1080.f;
 const float screen_height = 1080.f;
-const int MAX_PLATFORMS = 8;
+const int max_platforms = 8;
 
 float randomPlatformX(float platformWidth)
 {
@@ -88,33 +88,41 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width,
 }
 
 
-Game::Game() : window(sf::VideoMode({ 1080,1080 }), "Doodle Jump"), backgroundTexture("images/mini_studio_parti_enfer2.png"), background(backgroundTexture)
+Game::Game() : window(sf::VideoMode({ 1080,1080 }), "Doodle Jump"), backgroundTexture("images/mini_studio_parti_enfer2.png"), background(backgroundTexture), scoreText(font)
 {
     window.setFramerateLimit(60);
 
+    auto size = backgroundTexture.getSize();
+    background.setTextureRect(sf::IntRect({ 0, (int)size.y - (int)screen_height }, { (int)screen_width, (int)screen_height }));
 
     sf::View view;
     view.setSize({ screen_width, screen_height });
     view.setCenter({ screen_width / 2.f, screen_height / 2.f });
-    window.setView(view);
+    window.setView(view);    
 
-
-    sf::Font font;
     if (!font.openFromFile("C:/Windows/Fonts/arial.ttf"))
         std::cerr << "Impossible de charger la police\n";
 
+    scoreText.setCharacterSize(32);
+    scoreText.setPosition({ 20,20 });
+    scoreText.setFillColor(sf::Color::Black);
+    scoreText.setString("Score: 0");
+    
     platforms.clear();
 
     float spacing = 150.f;
     float startY = screen_height - 50.f; // sol
 
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < max_platforms; i++)
     {
         spawnPlatform(platforms, startY - i * spacing);
     }
 
     player.display();
+
+    score = 0;
+    gameover = false;
 
 }
 
@@ -123,17 +131,22 @@ void Game::reset()
     score = 0;
     gameover = false;
 
-    player = Player();
+    player.reset();
 
     platforms.clear();
 
     float spacing = 150.f;
     float startY = screen_height - 50.f;
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < max_platforms; i++)
     {
         spawnPlatform(platforms, startY - i * spacing);
     }
+
+    auto size = backgroundTexture.getSize();
+    background.setTextureRect(sf::IntRect({ 0, (int)size.y - (int)screen_height }, { (int)screen_width, (int)screen_height }));
+
+    scoreText.setString("Score: 0");
 }
 
 
@@ -150,7 +163,7 @@ void Game::run()
             {
                 platforms.erase(platforms.begin() + i);
 
-                if (platforms.size() < MAX_PLATFORMS)
+                if (platforms.size() < max_platforms)
                     spawnPlatform(platforms, -10.f);
             }
             else
@@ -194,21 +207,27 @@ void Game::update()
     if (player.getPose().y < cameraTriggerY)
     {
         float offset = cameraTriggerY - player.getPose().y;
-
-        
+                
         player.setPose({ player.getPose().x, cameraTriggerY });
-
-        
+                
         for (auto& p : platforms)
             p.setPosition({ p.getPosition().x, p.getPosition().y + offset });
 
-        
-        background.move({ 0, offset });
+        sf::IntRect rect = background.getTextureRect();
+
+        rect.position.y -= offset;
+
+        if (rect.position.y < 0)
+            rect.position.y = 0;
+
+        background.setTextureRect(rect);
+
+        score += static_cast<int>(offset);
     }
 
     player.warp();
 
-    if (player.pose.y > screen_height)
+    if (player.getPose().y > screen_height)
         gameover = true;
 
     scoreText.setString("Score: " + std::to_string(score));
@@ -230,12 +249,32 @@ void Game::render()
 
     if (gameover)
     {
-        sf::Text gameOverText(font);
-        gameOverText.setString("GAME OVER\nPress Spacebar to reset\nPress Escape to quit");
-        gameOverText.setCharacterSize(40);
-        gameOverText.setPosition({ 100,300 });
+        sf::RectangleShape gameoverBackground(sf::Vector2f(1080, 1080));
+        gameoverBackground.setFillColor(sf::Color::Black);
 
+        sf::Text gameOverText(font);
+        gameOverText.setString("GAME OVER");
+        gameOverText.setCharacterSize(80);
+        gameOverText.setPosition({ 300,300 });
+        gameOverText.setFillColor(sf::Color::Red);
+
+        sf::Text resetText(font);
+        resetText.setString("Press Spacebar to reset");
+        resetText.setCharacterSize(40);
+        resetText.setPosition({ 350,600 });
+        resetText.setFillColor(sf::Color::Blue);
+
+        sf::Text closeText(font);
+        closeText.setString("Press Escape to quit");
+        closeText.setCharacterSize(40);
+        closeText.setPosition({ 350,800 });
+        closeText.setFillColor(sf::Color::Green);
+        
+        
+        window.draw(gameoverBackground);
         window.draw(gameOverText);
+        window.draw(resetText);
+        window.draw(closeText);
     }
 
     window.display();

@@ -33,8 +33,6 @@ private:
 
     CollisionManager collisionManager;
 
-    int score;
-
 public:
 
     Game();

@@ -12,6 +12,7 @@ public:
 
 	void updates(float deltaTime);
 	void warp();
+	void reset();
 
 	
 	void draw(sf::RenderWindow& window);

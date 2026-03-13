@@ -53,26 +53,16 @@ void Player::updates(float deltaTime) {
 
 		pose.x -= moveDistance;
 
-
-		std::cout << "Player moved left: " << pose.x << std::endl;
-
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
 
-
 		pose.x += moveDistance;
-
-
-		std::cout << "Player moved right: " << pose.x << std::endl;
 	}
 
 	if (isGrounded == true) {
 		velocityY = jumpStrength;
 		isGrounded = false;
-
-		std::cout << "jump" << std::endl;
-
 
 	}
 
@@ -102,20 +92,26 @@ void Player::warp()
 		pose.x = 1070;
 		hitbox.setPosition(pose);
 
-		std::cout << "se tp a droite" << std::endl;
-
 	}
 
 	if (pose.x >= Border_Right)
 	{
 		pose.x = -50;
 		hitbox.setPosition(pose);
-
-		std::cout << "se tp a gauche" << std::endl;
 	}
 
 
 
+}
+
+void Player::reset()
+{
+	pose = { 375.f, 500.f };
+	velocityY = 0;
+	isGrounded = false;
+
+	sprite.setPosition(pose);
+	hitbox.setPosition(pose);
 }
 
 void Player::draw(sf::RenderWindow& window)
