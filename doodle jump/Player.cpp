@@ -1,7 +1,6 @@
 #include "Player.h"
 
-Player::Player()
-	:sprite(texture), texture("images/doodle.png")
+Player::Player() : textureRight("images/imageB.png"), textureLeft("images/imageA.png"), sprite(textureRight)
 {
 	
 }
@@ -12,14 +11,10 @@ void Player::display() {
 
 
 
-	sprite.setTexture(texture);
-	sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 80, 80 }));
+	sprite.setTexture(textureRight);
+	sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 64, 64 }));
 	sprite.setScale({ 1.f, 1.f });
 	sprite.setPosition(pose);
-
-
-
-
 
 	
 	hitbox.setSize({ 64.f, 64.f });
@@ -43,12 +38,14 @@ void Player::updates(float deltaTime) {
 
 
 		pose.x -= moveDistance;
+		sprite.setTexture(textureLeft);
 
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
 
 		pose.x += moveDistance;
+		sprite.setTexture(textureRight);
 	}
 
 	if (isGrounded == true) {
