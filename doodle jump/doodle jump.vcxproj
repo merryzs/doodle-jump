@@ -132,15 +132,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="EnemyType.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Wave.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="EnemyType.h" />
     <ClInclude Include="Platform.h" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlatformType.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClInclude Include="Wave.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
