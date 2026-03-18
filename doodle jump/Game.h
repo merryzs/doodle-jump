@@ -10,6 +10,7 @@
 #include "Defeat.h"
 #include "WinMenu.h"
 #include "Enemy.h"
+#include "PlatformType.h"
 
 class Game
 {

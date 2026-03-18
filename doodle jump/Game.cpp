@@ -1,17 +1,8 @@
 #include "Game.h"
-#include "Platform.h"
-#include "PlatformType.h"
-#include "lib.h"
-#include "CollisionManager.h"
-#include "Wave.h"
-
-
-
 
 const float screen_width = 1080.f;
 const float screen_height = 1080.f;
 const int max_platforms = 8;
-
 
 Menu* currentMenu = nullptr;
 
@@ -172,15 +163,10 @@ Game::Game()
         score = 0;
 
 		currentState = GameState::Main_Menu;
-
-   
-    
 }
 
 void Game::reset()
 {
-
-    
             score = 0;
             currentState = GameState::Play;
             player.reset();
@@ -209,8 +195,7 @@ void Game::run()
     {
         processEvents();
         update();
-
-        
+           
         for (size_t i = 0; i < platforms.size();)
         {
             if (platforms[i].getPosition().y > screen_height)
@@ -251,14 +236,11 @@ void Game::processEvents()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
             window.close();
-
     }
-
 }
 
 void Game::update()
-{
-  
+{  
     float deltaTime = clock.restart().asSeconds();
 
     switch (currentState)
@@ -288,19 +270,13 @@ void Game::update()
             player.resistance = std::clamp(player.resistance, 0.f, player.resistanceMax);
         }
 
-
         float slow = 1.f - (player.resistance / player.resistanceMax) * player.slowFactor;
-
-
         wave->update(deltaTime, slow);
-
 
         for (auto& p : platforms)
             p.update(deltaTime);
 
-
         player.updates(deltaTime);
-
 
         if (!player.isGrabbed)
         {
@@ -310,7 +286,6 @@ void Game::update()
                 player.grabOffset = player.getPose() - wave->getPosition();
             }
         }
-
 
         if (player.isGrabbed)
         {
@@ -322,7 +297,6 @@ void Game::update()
                 player.resistance = 0.f;
             }
         }
-
 
         float cameraTriggerY = screen_height * 0.4f;
 
@@ -366,7 +340,6 @@ void Game::update()
             spawnEnemy(-550.f, EnemyType::Moving);
         }
 
-
         for (auto& enemy : enemies)
         {
             enemy->update(deltaTime);
@@ -387,7 +360,6 @@ void Game::update()
                 ++i;
         }
 
-
         scoreText.setString("Score: " + std::to_string(score));
 
 
@@ -400,10 +372,7 @@ void Game::update()
 	}
 
     scoreText.setString("Score: " + std::to_string(score));
-
-   
 }
-
 
 void Game::checkEnemyCollisions()
 {
@@ -429,48 +398,39 @@ void Game::render()
 
     switch (currentState)
     {
-    
-
-
     case GameState::Main_Menu:
 
         mainMenu.display();
         mainMenu.update({ 0,0 });
-        mainMenu.draw(window);			
+        mainMenu.draw(window);
         break;
 
-    
     case GameState::Play:
 
-                window.draw(background);
+        window.draw(background);
 
-                for (const auto& platform : platforms)
-                    platform.draw(window);
+        for (const auto& platform : platforms)
+            platform.draw(window);
 
-                for (auto& enemy : enemies)
-                    enemy->draw(window);
+        for (auto& enemy : enemies)
+            enemy->draw(window);
 
-                wave->draw(window);
-                player.draw(window);
+        wave->draw(window);
+        player.draw(window);
 
-                window.draw(scoreText);
+        window.draw(scoreText);
 
-				break;  
+        break;
 
+    case GameState::Game_Over:
 
-	case GameState::Game_Over:
-        
-        
         defeat.draw(window);
         break;
 
     case GameState::win:
 
         win.draw(window);
-
     }
- 
-
 
     window.display();
 }
