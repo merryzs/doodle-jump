@@ -76,6 +76,12 @@ void Player::warp()
     hitbox.setPosition(pose);
 }
 
+sf::FloatRect Player::getBounds() const
+{
+    return hitbox.getGlobalBounds();
+}
+
+
 void Player::reset()
 {
     pose = { 375.f, 500.f };

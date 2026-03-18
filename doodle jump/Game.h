@@ -9,6 +9,7 @@
 #include "Menu.h"
 #include "Defeat.h"
 #include "WinMenu.h"
+#include "Enemy.h"
 
 class Game
 {
@@ -35,6 +36,15 @@ private:
     Player player;
     std::vector<Platform> platforms;
     CollisionManager collisionManager;
+
+    std::vector<std::unique_ptr<Enemy>> enemies;
+
+    const int SCORE_SPAWN_ENEMY = 1000;
+    int lastEnemyScore = 0;
+
+    void spawnEnemy(float y, EnemyType type);
+    void checkEnemyCollisions();
+
 
     sf::Texture waveTexture;
     std::optional<Wave> wave;

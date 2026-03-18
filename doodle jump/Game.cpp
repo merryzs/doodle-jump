@@ -17,11 +17,9 @@ Menu* currentMenu = nullptr;
 
 Defeat defeat;
 WinMenu win;
-
 Main_Menu mainMenu;
-
 GameState currentState;
- 
+
 
 float randomPlatformX(float platformWidth)
 {
@@ -95,6 +93,35 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width,
     );
 }
 
+void Game::spawnEnemy(float y, EnemyType type)
+{
+    const float MIN_DISTANCE_X = 300.f;
+    const int MAX_TRIES = 10;
+
+    float x = 0.f;
+    bool valid = false;
+
+    for (int i = 0; i < MAX_TRIES; i++)
+    {
+        x = static_cast<float>(rand() % 900 + 50);
+        valid = true;
+
+        for (auto& e : enemies)
+        {
+            if (std::abs(e->getPosition().x - x) < MIN_DISTANCE_X)
+            {
+                valid = false;
+                break;
+            }
+        }
+
+        if (valid)
+            break;
+    }
+
+    enemies.emplace_back(std::make_unique<Enemy>(sf::Vector2f(x, y), type));
+}
+
 Game::Game()
     : window(sf::VideoMode({ (int)screen_width,(int)screen_height }), "Doodle Jump"),
     backgroundTexture("images/background.png"),
@@ -131,6 +158,7 @@ Game::Game()
 
 
         platforms.clear();
+        enemies.clear();
 
         float spacing = 150.f;
         float startY = screen_height - 50.f;
@@ -330,6 +358,36 @@ void Game::update()
             currentState = GameState::win;
         }
 
+        if (score - lastEnemyScore >= SCORE_SPAWN_ENEMY)
+        {
+            lastEnemyScore = score;
+
+            spawnEnemy(-50.f, EnemyType::Static);
+            spawnEnemy(-550.f, EnemyType::Moving);
+        }
+
+
+        for (auto& enemy : enemies)
+        {
+            enemy->update(deltaTime);
+
+
+            if (enemy->isActive() && player.getBounds().findIntersection(enemy->getBounds()))
+            {
+                currentState = GameState::Game_Over;
+
+            }
+        }
+
+        for (size_t i = 0; i < enemies.size(); )
+        {
+            if (enemies[i]->getPosition().y > screen_height + 100.f)
+                enemies.erase(enemies.begin() + i);
+            else
+                ++i;
+        }
+
+
         scoreText.setString("Score: " + std::to_string(score));
 
 
@@ -340,8 +398,29 @@ void Game::update()
 
         break;
 	}
-    
+
+    scoreText.setString("Score: " + std::to_string(score));
+
    
+}
+
+
+void Game::checkEnemyCollisions()
+{
+    sf::FloatRect playerBounds(
+        player.hitbox.getPosition(),
+        player.hitbox.getSize()
+    );
+
+    for (auto& enemy : enemies)
+    {
+        if (enemy->isActive() && playerBounds.findIntersection(enemy->getBounds()))
+        {
+            
+            currentState = GameState::Game_Over;
+            return;
+        }
+    }
 }
 
 void Game::render()
@@ -367,6 +446,9 @@ void Game::render()
 
                 for (const auto& platform : platforms)
                     platform.draw(window);
+
+                for (auto& enemy : enemies)
+                    enemy->draw(window);
 
                 wave->draw(window);
                 player.draw(window);
