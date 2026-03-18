@@ -4,6 +4,12 @@
 #include "Platform.h"
 #include "CollisionManager.h"
 #include "Wave.h"
+#include "GameState.h"
+#include "MainMenu.h"
+#include "Menu.h"
+#include "Defeat.h"
+#include "WinMenu.h"
+#include "Enemy.h"
 
 class Game
 {
@@ -31,11 +37,20 @@ private:
     std::vector<Platform> platforms;
     CollisionManager collisionManager;
 
+    std::vector<std::unique_ptr<Enemy>> enemies;
+
+    const int SCORE_SPAWN_ENEMY = 1000;
+    int lastEnemyScore = 0;
+
+    void spawnEnemy(float y, EnemyType type);
+    void checkEnemyCollisions();
+
+
     sf::Texture waveTexture;
     std::optional<Wave> wave;
 
+
     int score = 0;
-    bool gameover = false;
 
     sf::Clock clock;
 };

@@ -132,19 +132,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CollisionManager.cpp" />
-    <ClCompile Include="EnemyType.cpp" />
+    <ClCompile Include="Defeat.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Wave.cpp" />
+    <ClCompile Include="WinMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CollisionManager.h" />
-    <ClInclude Include="EnemyType.h" />
+    <ClInclude Include="Defeat.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Platform.h" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlatformType.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClInclude Include="Wave.h" />
+    <ClInclude Include="WinMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />

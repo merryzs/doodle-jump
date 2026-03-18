@@ -5,9 +5,21 @@
 #include "CollisionManager.h"
 #include "Wave.h"
 
+
+
+
 const float screen_width = 1080.f;
 const float screen_height = 1080.f;
 const int max_platforms = 8;
+
+
+Menu* currentMenu = nullptr;
+
+Defeat defeat;
+WinMenu win;
+Main_Menu mainMenu;
+GameState currentState;
+
 
 float randomPlatformX(float platformWidth)
 {
@@ -81,6 +93,35 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width,
     );
 }
 
+void Game::spawnEnemy(float y, EnemyType type)
+{
+    const float MIN_DISTANCE_X = 300.f;
+    const int MAX_TRIES = 10;
+
+    float x = 0.f;
+    bool valid = false;
+
+    for (int i = 0; i < MAX_TRIES; i++)
+    {
+        x = static_cast<float>(rand() % 900 + 50);
+        valid = true;
+
+        for (auto& e : enemies)
+        {
+            if (std::abs(e->getPosition().x - x) < MIN_DISTANCE_X)
+            {
+                valid = false;
+                break;
+            }
+        }
+
+        if (valid)
+            break;
+    }
+
+    enemies.emplace_back(std::make_unique<Enemy>(sf::Vector2f(x, y), type));
+}
+
 Game::Game()
     : window(sf::VideoMode({ (int)screen_width,(int)screen_height }), "Doodle Jump"),
     backgroundTexture("images/background.png"),
@@ -89,71 +130,77 @@ Game::Game()
 {
     window.setFramerateLimit(60);
 
-   
     if (!waveTexture.loadFromFile("images/wave.png"))
         std::cerr << "Impossible de charger la texture de la vague\n";
 
-    
+
     wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
 
-   
+
     auto size = backgroundTexture.getSize();
     background.setTextureRect(sf::IntRect({ 0, (int)size.y - (int)screen_height },
         { (int)screen_width, (int)screen_height }));
 
-   
+
     sf::View view;
     view.setSize({ screen_width, screen_height });
     view.setCenter({ screen_width / 2.f, screen_height / 2.f });
     window.setView(view);
 
-  
+
     if (!font.openFromFile("C:/Windows/Fonts/arial.ttf"))
         std::cerr << "Impossible de charger la police\n";
 
-    scoreText.setCharacterSize(32);
-    scoreText.setPosition({ 20,20 });
-    scoreText.setFillColor(sf::Color::Black);
-    scoreText.setString("Score: 0");
+        scoreText.setCharacterSize(32);
+        scoreText.setPosition({ 20,20 });
+        scoreText.setFillColor(sf::Color::Black);
+        scoreText.setString("Score: 0");
+
+
+        platforms.clear();
+        enemies.clear();
+
+        float spacing = 150.f;
+        float startY = screen_height - 50.f;
+
+        for (int i = 0; i < max_platforms; i++)
+            spawnPlatform(platforms, startY - i * spacing);
+
+        player.display();
+        defeat.display();
+        win.display();
+        score = 0;
+
+		currentState = GameState::Main_Menu;
 
    
-    platforms.clear();
-
-    float spacing = 150.f;
-    float startY = screen_height - 50.f;
-
-    for (int i = 0; i < max_platforms; i++)
-        spawnPlatform(platforms, startY - i * spacing);
-
-    player.display();
-
-    score = 0;
-    gameover = false;
+    
 }
 
 void Game::reset()
 {
-    score = 0;
-    gameover = false;
 
-    player.reset();
+    
+            score = 0;
+            currentState = GameState::Play;
+            player.reset();
 
-    platforms.clear();
+            platforms.clear();
 
-    float spacing = 150.f;
-    float startY = screen_height - 50.f;
+            float spacing = 150.f;
+            float startY = screen_height - 50.f;
 
-    for (int i = 0; i < max_platforms; i++)
-        spawnPlatform(platforms, startY - i * spacing);
+            for (int i = 0; i < max_platforms; i++)
+                spawnPlatform(platforms, startY - i * spacing);
 
-    auto size = backgroundTexture.getSize();
-    background.setTextureRect(sf::IntRect({ 0, (int)size.y - (int)screen_height },
-        { (int)screen_width, (int)screen_height }));
+            auto size = backgroundTexture.getSize();
+            background.setTextureRect(sf::IntRect({ 0, (int)size.y - (int)screen_height },
+                { (int)screen_width, (int)screen_height }));
 
-    scoreText.setString("Score: 0");
+            scoreText.setString("Score: 0");
 
-   
-    wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
+
+            wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
 }
 
 void Game::run()
@@ -192,104 +239,187 @@ void Game::processEvents()
             window.close();
     }
 
-    if (gameover && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-        reset();
+    if (currentState == GameState::Main_Menu)
+    {
+        mainMenu.HandleClick(sf::Vector2f(sf::Mouse::getPosition(window)));
+	}
 
-    if (gameover && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-        window.close();
+    if (currentState == GameState::Game_Over || currentState == GameState::win)
+    {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+            reset();
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+            window.close();
+
+    }
+
 }
 
 void Game::update()
 {
+  
     float deltaTime = clock.restart().asSeconds();
 
-    
-    if (player.isGrabbed)
+    switch (currentState)
     {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) ||
-            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) ||
-            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) ||
-            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+    case GameState::Main_Menu:
+            mainMenu.update(sf::Vector2f(sf::Mouse::getPosition(window)));
+            break;
+       
+    case GameState::Play:
+        
+
+
+        if (player.isGrabbed)
         {
-            player.resistance += 1.5f;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+            {
+                player.resistance += 1.5f;
+            }
+            else
+            {
+                player.resistance -= 0.5f;
+            }
+
+            player.resistance = std::clamp(player.resistance, 0.f, player.resistanceMax);
         }
-        else
-        {
-            player.resistance -= 0.5f;
-        }
 
-        player.resistance = std::clamp(player.resistance, 0.f, player.resistanceMax);
-    }
 
-    
-    float slow = 1.f - (player.resistance / player.resistanceMax) * player.slowFactor;
+        float slow = 1.f - (player.resistance / player.resistanceMax) * player.slowFactor;
 
-   
-    wave->update(deltaTime, slow);
 
-    
-    for (auto& p : platforms)
-        p.update(deltaTime);
+        wave->update(deltaTime, slow);
 
-  
-    player.updates(deltaTime);
-
-    
-    if (!player.isGrabbed)
-    {
-        if (auto inter = wave->getHitbox().findIntersection(player.getHitbox()))
-        {
-            player.isGrabbed = true;
-            player.grabOffset = player.getPose() - wave->getPosition();
-        }
-    }
-
-   
-    if (player.isGrabbed)
-    {
-        player.setPose(wave->getPosition() + player.grabOffset);
-
-        if (player.resistance >= player.resistanceMax)
-        {
-            player.isGrabbed = false;
-            player.resistance = 0.f;
-        }
-    }
-
-   
-    float cameraTriggerY = screen_height * 0.4f;
-
-    if (player.getPose().y < cameraTriggerY)
-    {
-        float offset = cameraTriggerY - player.getPose().y;
-
-        player.setPose({ player.getPose().x, cameraTriggerY });
 
         for (auto& p : platforms)
-            p.setPosition({ p.getPosition().x, p.getPosition().y + offset });
+            p.update(deltaTime);
 
-        sf::IntRect rect = background.getTextureRect();
-        rect.position.y -= offset;
 
-        if (rect.position.y < 0)
-            rect.position.y = 0;
+        player.updates(deltaTime);
 
-        background.setTextureRect(rect);
 
-        score += static_cast<int>(offset);
-    }
+        if (!player.isGrabbed)
+        {
+            if (auto inter = wave->getHitbox().findIntersection(player.getHitbox()))
+            {
+                player.isGrabbed = true;
+                player.grabOffset = player.getPose() - wave->getPosition();
+            }
+        }
 
-    player.warp();
 
-    if (player.getPose().y > screen_height)
-        gameover = true;
+        if (player.isGrabbed)
+        {
+            player.setPose(wave->getPosition() + player.grabOffset);
+
+            if (player.resistance >= player.resistanceMax)
+            {
+                player.isGrabbed = false;
+                player.resistance = 0.f;
+            }
+        }
+
+
+        float cameraTriggerY = screen_height * 0.4f;
+
+        if (player.getPose().y < cameraTriggerY)
+        {
+            float offset = cameraTriggerY - player.getPose().y;
+
+            player.setPose({ player.getPose().x, cameraTriggerY });
+
+            for (auto& p : platforms)
+                p.setPosition({ p.getPosition().x, p.getPosition().y + offset });
+
+            sf::IntRect rect = background.getTextureRect();
+            rect.position.y -= offset;
+
+            if (rect.position.y < 0)
+                rect.position.y = 0;
+
+            background.setTextureRect(rect);
+
+            score += static_cast<int>(offset);
+        }
+
+        player.warp();
+
+        if (player.getPose().y > screen_height)
+        {
+            currentState = GameState::Game_Over;
+        }
+
+        if (score >= 30000)
+        {
+            currentState = GameState::win;
+        }
+
+        if (score - lastEnemyScore >= SCORE_SPAWN_ENEMY)
+        {
+            lastEnemyScore = score;
+
+            spawnEnemy(-50.f, EnemyType::Static);
+            spawnEnemy(-550.f, EnemyType::Moving);
+        }
+
+
+        for (auto& enemy : enemies)
+        {
+            enemy->update(deltaTime);
+
+
+            if (enemy->isActive() && player.getBounds().findIntersection(enemy->getBounds()))
+            {
+                currentState = GameState::Game_Over;
+
+            }
+        }
+
+        for (size_t i = 0; i < enemies.size(); )
+        {
+            if (enemies[i]->getPosition().y > screen_height + 100.f)
+                enemies.erase(enemies.begin() + i);
+            else
+                ++i;
+        }
+
+
+        scoreText.setString("Score: " + std::to_string(score));
+
+
+        if (wave->isOffScreen(screen_width))
+        {
+            wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
+        };
+
+        break;
+	}
 
     scoreText.setString("Score: " + std::to_string(score));
 
    
-    if (wave->isOffScreen(screen_width))
+}
+
+
+void Game::checkEnemyCollisions()
+{
+    sf::FloatRect playerBounds(
+        player.hitbox.getPosition(),
+        player.hitbox.getSize()
+    );
+
+    for (auto& enemy : enemies)
     {
-        wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
+        if (enemy->isActive() && playerBounds.findIntersection(enemy->getBounds()))
+        {
+            
+            currentState = GameState::Game_Over;
+            return;
+        }
     }
 }
 
@@ -297,44 +427,50 @@ void Game::render()
 {
     window.clear();
 
-    window.draw(background);
-
-    for (const auto& platform : platforms)
-        platform.draw(window);
-
-    wave->draw(window);
-    player.draw(window);
-
-    window.draw(scoreText);
-
-    if (gameover)
+    switch (currentState)
     {
-        sf::RectangleShape gameoverBackground(sf::Vector2f(1080, 1080));
-        gameoverBackground.setFillColor(sf::Color::Black);
+    
 
-        sf::Text gameOverText(font);
-        gameOverText.setString("GAME OVER");
-        gameOverText.setCharacterSize(80);
-        gameOverText.setPosition({ 300,300 });
-        gameOverText.setFillColor(sf::Color::Red);
 
-        sf::Text resetText(font);
-        resetText.setString("Press Spacebar to reset");
-        resetText.setCharacterSize(40);
-        resetText.setPosition({ 350,600 });
-        resetText.setFillColor(sf::Color::Blue);
+    case GameState::Main_Menu:
 
-        sf::Text closeText(font);
-        closeText.setString("Press Escape to quit");
-        closeText.setCharacterSize(40);
-        closeText.setPosition({ 350,800 });
-        closeText.setFillColor(sf::Color::Green);
+        mainMenu.display();
+        mainMenu.update({ 0,0 });
+        mainMenu.draw(window);			
+        break;
 
-        window.draw(gameoverBackground);
-        window.draw(gameOverText);
-        window.draw(resetText);
-        window.draw(closeText);
+    
+    case GameState::Play:
+
+                window.draw(background);
+
+                for (const auto& platform : platforms)
+                    platform.draw(window);
+
+                for (auto& enemy : enemies)
+                    enemy->draw(window);
+
+                wave->draw(window);
+                player.draw(window);
+
+                window.draw(scoreText);
+
+				break;  
+
+
+	case GameState::Game_Over:
+        
+        
+        defeat.draw(window);
+        break;
+
+    case GameState::win:
+
+        win.draw(window);
+
     }
+ 
+
 
     window.display();
 }
