@@ -23,7 +23,7 @@ public:
 
 	sf::Vector2f getPose() const { return pose; }
 	void setPose(const sf::Vector2f& p) { pose = p; hitbox.setPosition(p); sprite.setPosition(p); }
-
+	sf::FloatRect getBounds() const;
 	float getVelocityY() const { return velocityY; }
 	void setVelocityY(float v) { velocityY = v; }
 

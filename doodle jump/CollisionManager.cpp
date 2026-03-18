@@ -42,8 +42,8 @@ void CollisionManager::handle(Player& player, std::vector<Platform>& platforms)
                     platRect.position.y - pSize.y
                     });
 
-                player.setVelocityY(0.f);
-                player.setGrounded(true);
+                player.setVelocityY(-900.f);
+                player.setGrounded(false);
 
                 pPos = player.getPose();
                 playerRect = sf::FloatRect(pPos, pSize);

@@ -87,6 +87,12 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width,
     );
 }
 
+void Game::spawnEnemy(float y, EnemyType type)
+{
+    float x = static_cast<float>(rand() % 900 + 50);
+    enemies.push_back(std::make_unique<Enemy>(sf::Vector2f(x, y), type));
+}
+
 
 Game::Game() : window(sf::VideoMode({ (int)screen_width,(int)screen_height }), "Doodle Jump"), backgroundTexture("images/mini_studio_parti_enfer2.png"), background(backgroundTexture), scoreText(font)
 {
@@ -109,6 +115,7 @@ Game::Game() : window(sf::VideoMode({ (int)screen_width,(int)screen_height }), "
     scoreText.setString("Score: 0");
     
     platforms.clear();
+    enemies.clear();
 
     float spacing = 150.f;
     float startY = screen_height - 50.f; // sol
@@ -134,6 +141,8 @@ void Game::reset()
     player.reset();
 
     platforms.clear();
+    enemies.clear();
+    lastEnemyScore = 0;
 
     float spacing = 150.f;
     float startY = screen_height - 50.f;
@@ -213,6 +222,9 @@ void Game::update()
         for (auto& p : platforms)
             p.setPosition({ p.getPosition().x, p.getPosition().y + offset });
 
+        for (auto& e : enemies)
+            e->setPosition({ e->getPosition().x, e->getPosition().y + offset });
+
         sf::IntRect rect = background.getTextureRect();
 
         rect.position.y -= offset;
@@ -230,8 +242,64 @@ void Game::update()
     if (player.getPose().y > screen_height)
         gameover = true;
 
+    
+    if (score - lastEnemyScore >= SCORE_SPAWN_ENEMY)
+    {
+        lastEnemyScore = score;
+
+        spawnEnemy(-50.f, EnemyType::Static);
+        spawnEnemy(-150.f, EnemyType::Moving);
+    }
+
+   
+    for (auto& enemy : enemies)
+    {
+        enemy->update(deltaTime);
+
+        
+        if (enemy->isActive() && player.getBounds().findIntersection(enemy->getBounds()))
+        {
+            gameover = true;
+        }
+    }
+
     scoreText.setString("Score: " + std::to_string(score));
 
+}
+
+void Game::updateEnemies(float deltaTime)
+{
+    for (auto& enemy : enemies)
+        enemy->update(deltaTime);
+
+    for (size_t i = 0; i < enemies.size(); )
+    {
+        if (enemies[i]->getPosition().y > screen_height + 100.f)
+        {
+            enemies.erase(enemies.begin() + i);
+        }
+        else
+        {
+            ++i;
+        }
+    }
+}
+
+void Game::checkEnemyCollisions()
+{
+    sf::FloatRect playerBounds(
+        player.hitbox.getPosition(),
+        player.hitbox.getSize()
+    );
+
+    for (auto& enemy : enemies)
+    {
+        if (enemy->isActive() && playerBounds.findIntersection(enemy->getBounds()))
+        {
+            gameover = true;
+            return;
+        }
+    }
 }
 
 void Game::render()
@@ -242,6 +310,9 @@ void Game::render()
 
     for (const auto& platform : platforms)
         platform.draw(window);
+
+    for (auto& enemy : enemies)
+        enemy->draw(window);
 
     player.draw(window);
 

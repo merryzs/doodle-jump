@@ -17,3 +17,4 @@
 
 #include <vector>
 #include <cmath>
+#include <memory.h>
