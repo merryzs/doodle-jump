@@ -8,6 +8,7 @@
     <ClCompile Include="PlatformType.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="PowerUp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CollisionManager.h" />
@@ -16,7 +17,7 @@
     <ClInclude Include="lib.h" />
     <ClInclude Include="PlatformType.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="EnemyType.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="PowerUp.h" />
   </ItemGroup>
 </Project>

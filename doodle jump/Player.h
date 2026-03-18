@@ -28,6 +28,12 @@ public:
 	void setVelocityY(float v) { velocityY = v; }
 
 	void setGrounded(bool g) { isGrounded = g; }
+	
+	void setSpeed(float s);
+	void setGravity(float g);
+
+	float getSpeed() const;
+	float getGravity() const;
 
 private:
 
@@ -42,10 +48,9 @@ private:
 	//jump test
 	float velocityY = 0.f;
 	bool isGrounded = false;
-	const float gravity = 1500.f;
+	float gravity = 1500.f;
 	const float jumpStrength = -1000.f;
 	float groundLevel = 700.f;
-
 
 	float Border_left = -64.f;
 	float Border_Right = 750.f;

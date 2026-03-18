@@ -1,6 +1,11 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include "EnemyType.h"
+#include "lib.h"
+
+enum class EnemyType
+{
+    Static,
+    Moving
+};
 
 class Enemy
 {
@@ -15,7 +20,7 @@ private:
 
     EnemyType type;
     float speed;
-    int direction; // -1 = gauche, 1 = droite
+    int direction; 
     bool active;
 
 public:
@@ -30,6 +35,7 @@ public:
     EnemyType getType() const;
 
     void setPosition(sf::Vector2f newPos);
+    
 
     bool isActive() const;
     void setActive(bool value);

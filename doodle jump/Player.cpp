@@ -116,3 +116,23 @@ void Player::draw(sf::RenderWindow& window)
 	window.draw(sprite);
 
 }
+
+void Player::setSpeed(float s)
+{
+	speed = s;
+}
+
+void Player::setGravity(float g)
+{
+	gravity = g;
+}
+
+float Player::getSpeed() const
+{
+	return speed;
+}
+
+float Player::getGravity() const
+{
+	return gravity;
+}

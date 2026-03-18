@@ -30,8 +30,8 @@ float randomPlatformX(float platformWidth)
 void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width, float height)
 {
     const int MAX_TRIES = 20;
-    const float MIN_VERTICAL_GAP = 100.f;   
-    const float MIN_HORIZONTAL_GAP = 100.f; 
+    const float MIN_VERTICAL_GAP = 200.f;   
+    const float MIN_HORIZONTAL_GAP = 200.f; 
 
     for (int i = 0; i < MAX_TRIES; i++)
     {
@@ -89,9 +89,50 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width,
 
 void Game::spawnEnemy(float y, EnemyType type)
 {
-    float x = static_cast<float>(rand() % 900 + 50);
-    enemies.push_back(std::make_unique<Enemy>(sf::Vector2f(x, y), type));
+    const float MIN_DISTANCE_X = 300.f;
+    const int MAX_TRIES = 10;
+
+    float x = 0.f; 
+    bool valid = false;
+
+    for (int i = 0; i < MAX_TRIES; i++)
+    {
+        x = static_cast<float>(rand() % 900 + 50);
+        valid = true;
+
+        for (auto& e : enemies)
+        {
+            if (std::abs(e->getPosition().x - x) < MIN_DISTANCE_X)
+            {
+                valid = false;
+                break;
+            }
+        }
+
+        if (valid)
+            break;
+    }
+
+    enemies.emplace_back(std::make_unique<Enemy>(sf::Vector2f(x, y), type));
 }
+
+void Game::spawnPowerUpOnPlatform(const Platform& platform)
+{
+    if (rand() % 100 > 20) return;
+
+    float x = platform.getPosition().x + platform.getSize().x / 2.f - 25.f;
+    float y = platform.getPosition().y - 50.f;
+
+    int type = rand() % 3;
+    PowerUpType pType;
+
+    if (type == 0) pType = PowerUpType::JumpBoost;
+    else if (type == 1) pType = PowerUpType::SpeedBoost;
+    else pType = PowerUpType::Jetpack;
+
+    powerUps.push_back(std::make_unique<PowerUp>(sf::Vector2f(x, y), pType));
+}
+
 
 
 Game::Game() : window(sf::VideoMode({ (int)screen_width,(int)screen_height }), "Doodle Jump"), backgroundTexture("images/mini_studio_parti_enfer2.png"), background(backgroundTexture), scoreText(font)
@@ -116,6 +157,7 @@ Game::Game() : window(sf::VideoMode({ (int)screen_width,(int)screen_height }), "
     
     platforms.clear();
     enemies.clear();
+    powerUps.clear();
 
     float spacing = 150.f;
     float startY = screen_height - 50.f; // sol
@@ -142,6 +184,7 @@ void Game::reset()
 
     platforms.clear();
     enemies.clear();
+    powerUps.clear();
     lastEnemyScore = 0;
 
     float spacing = 150.f;
@@ -225,6 +268,9 @@ void Game::update()
         for (auto& e : enemies)
             e->setPosition({ e->getPosition().x, e->getPosition().y + offset });
 
+        for (auto& u : powerUps)
+            u->setPosition({ u->getPosition().x, u->getPosition().y + offset });
+
         sf::IntRect rect = background.getTextureRect();
 
         rect.position.y -= offset;
@@ -248,7 +294,7 @@ void Game::update()
         lastEnemyScore = score;
 
         spawnEnemy(-50.f, EnemyType::Static);
-        spawnEnemy(-150.f, EnemyType::Moving);
+        spawnEnemy(-550.f, EnemyType::Moving);
     }
 
    
@@ -263,26 +309,24 @@ void Game::update()
         }
     }
 
-    scoreText.setString("Score: " + std::to_string(score));
-
-}
-
-void Game::updateEnemies(float deltaTime)
-{
-    for (auto& enemy : enemies)
-        enemy->update(deltaTime);
-
     for (size_t i = 0; i < enemies.size(); )
     {
         if (enemies[i]->getPosition().y > screen_height + 100.f)
-        {
             enemies.erase(enemies.begin() + i);
-        }
         else
-        {
             ++i;
-        }
     }
+
+    for (size_t i = 0; i < powerUps.size(); )
+    {
+        if (powerUps[i]->getPosition().y > screen_height + 100.f)
+            powerUps.erase(powerUps.begin() + i);
+        else
+            ++i;
+    }
+
+    scoreText.setString("Score: " + std::to_string(score));
+
 }
 
 void Game::checkEnemyCollisions()
@@ -313,6 +357,9 @@ void Game::render()
 
     for (auto& enemy : enemies)
         enemy->draw(window);
+
+    for (auto& ups: powerUps)
+        ups->draw(window);
 
     player.draw(window);
 

@@ -135,15 +135,16 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PowerUp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Enemy.h" />
-    <ClInclude Include="EnemyType.h" />
     <ClInclude Include="Platform.h" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlatformType.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClInclude Include="PowerUp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />

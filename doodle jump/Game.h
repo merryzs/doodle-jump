@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Platform.h"
+#include "PowerUp.h"
 #include "CollisionManager.h"
 
 class Game
@@ -20,13 +21,16 @@ private:
 
     Player player;
     std::vector<std::unique_ptr<Enemy>> enemies;
-    const int SCORE_SPAWN_ENEMY = 500;
+
+    const int SCORE_SPAWN_ENEMY = 1000;
     int lastEnemyScore = 0;
 
     void spawnEnemy(float y, EnemyType type);
-    void updateEnemies(float deltaTime);
     void checkEnemyCollisions();
+    void spawnPowerUpOnPlatform(const Platform& platform);
+
     std::vector<Platform> platforms;
+    std::vector<std::unique_ptr<PowerUp>> powerUps;
 
     sf::Texture backgroundTexture;
     sf::Sprite background;
