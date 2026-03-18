@@ -4,6 +4,9 @@
 #include "Platform.h"
 #include "CollisionManager.h"
 #include "Wave.h"
+#include "GameState.h"
+#include "MainMenu.h"
+#include "Menu.h"
 
 class Game
 {
@@ -35,7 +38,6 @@ private:
     std::optional<Wave> wave;
 
     int score = 0;
-    bool gameover = false;
 
     sf::Clock clock;
 };
