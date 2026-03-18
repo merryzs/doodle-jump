@@ -28,7 +28,7 @@ void Main_Menu::create_Buttons()
 
 void Main_Menu::display()
 {
-    // Logique d'affichage si nécessaire (déjà créés dans le constructeur)
+    create_Buttons();
 }
 
 void Main_Menu::update(const sf::Vector2f Mouse_Pose)

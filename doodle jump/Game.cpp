@@ -117,21 +117,6 @@ Game::Game()
     if (!font.openFromFile("C:/Windows/Fonts/arial.ttf"))
         std::cerr << "Impossible de charger la police\n";
 
-    switch (currentState)
-    {
-
-        case GameState::Main_Menu:
-			mainMenu.display();
-			mainMenu.update({ 0,0 });
-			mainMenu.HandleClick({ 0,0 });
-			mainMenu.draw(window);
-			break;
-
-    case GameState::Play:
-       
-
-
-
         scoreText.setCharacterSize(32);
         scoreText.setPosition({ 20,20 });
         scoreText.setFillColor(sf::Color::Black);
@@ -150,33 +135,36 @@ Game::Game()
 
         score = 0;
 
-    }
+		currentState = GameState::Main_Menu;
+
    
     
 }
 
 void Game::reset()
 {
-    score = 0;
-	currentState = GameState::Play;
-    player.reset();
 
-    platforms.clear();
+    
+            score = 0;
+            currentState = GameState::Play;
+            player.reset();
 
-    float spacing = 150.f;
-    float startY = screen_height - 50.f;
+            platforms.clear();
 
-    for (int i = 0; i < max_platforms; i++)
-        spawnPlatform(platforms, startY - i * spacing);
+            float spacing = 150.f;
+            float startY = screen_height - 50.f;
 
-    auto size = backgroundTexture.getSize();
-    background.setTextureRect(sf::IntRect({ 0, (int)size.y - (int)screen_height },
-        { (int)screen_width, (int)screen_height }));
+            for (int i = 0; i < max_platforms; i++)
+                spawnPlatform(platforms, startY - i * spacing);
 
-    scoreText.setString("Score: 0");
+            auto size = backgroundTexture.getSize();
+            background.setTextureRect(sf::IntRect({ 0, (int)size.y - (int)screen_height },
+                { (int)screen_width, (int)screen_height }));
 
-   
-    wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
+            scoreText.setString("Score: 0");
+
+
+            wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
 }
 
 void Game::run()
@@ -215,6 +203,11 @@ void Game::processEvents()
             window.close();
     }
 
+    if (currentState == GameState::Main_Menu)
+    {
+        mainMenu.HandleClick(sf::Vector2f(sf::Mouse::getPosition(window)));
+	}
+
     if (currentState == GameState::Game_Over)
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
@@ -224,6 +217,7 @@ void Game::processEvents()
             window.close();
 
     }
+
 }
 
 void Game::update()
@@ -237,98 +231,98 @@ void Game::update()
             break;
        
     case GameState::Play:
-            float deltaTime = clock.restart().asSeconds();
+        float deltaTime = clock.restart().asSeconds();
 
 
-            if (player.isGrabbed)
+        if (player.isGrabbed)
+        {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
             {
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) ||
-                    sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) ||
-                    sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) ||
-                    sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-                {
-                    player.resistance += 1.5f;
-                }
-                else
-                {
-                    player.resistance -= 0.5f;
-                }
-
-                player.resistance = std::clamp(player.resistance, 0.f, player.resistanceMax);
+                player.resistance += 1.5f;
+            }
+            else
+            {
+                player.resistance -= 0.5f;
             }
 
+            player.resistance = std::clamp(player.resistance, 0.f, player.resistanceMax);
+        }
 
-            float slow = 1.f - (player.resistance / player.resistanceMax) * player.slowFactor;
+
+        float slow = 1.f - (player.resistance / player.resistanceMax) * player.slowFactor;
 
 
-            wave->update(deltaTime, slow);
+        wave->update(deltaTime, slow);
 
+
+        for (auto& p : platforms)
+            p.update(deltaTime);
+
+
+        player.updates(deltaTime);
+
+
+        if (!player.isGrabbed)
+        {
+            if (auto inter = wave->getHitbox().findIntersection(player.getHitbox()))
+            {
+                player.isGrabbed = true;
+                player.grabOffset = player.getPose() - wave->getPosition();
+            }
+        }
+
+
+        if (player.isGrabbed)
+        {
+            player.setPose(wave->getPosition() + player.grabOffset);
+
+            if (player.resistance >= player.resistanceMax)
+            {
+                player.isGrabbed = false;
+                player.resistance = 0.f;
+            }
+        }
+
+
+        float cameraTriggerY = screen_height * 0.4f;
+
+        if (player.getPose().y < cameraTriggerY)
+        {
+            float offset = cameraTriggerY - player.getPose().y;
+
+            player.setPose({ player.getPose().x, cameraTriggerY });
 
             for (auto& p : platforms)
-                p.update(deltaTime);
+                p.setPosition({ p.getPosition().x, p.getPosition().y + offset });
+
+            sf::IntRect rect = background.getTextureRect();
+            rect.position.y -= offset;
+
+            if (rect.position.y < 0)
+                rect.position.y = 0;
+
+            background.setTextureRect(rect);
+
+            score += static_cast<int>(offset);
+        }
+
+        player.warp();
+
+        if (player.getPose().y > screen_height)
+            currentState = GameState::Game_Over;
+
+        scoreText.setString("Score: " + std::to_string(score));
 
 
-            player.updates(deltaTime);
+        if (wave->isOffScreen(screen_width))
+        {
+            wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
+        };
 
-
-            if (!player.isGrabbed)
-            {
-                if (auto inter = wave->getHitbox().findIntersection(player.getHitbox()))
-                {
-                    player.isGrabbed = true;
-                    player.grabOffset = player.getPose() - wave->getPosition();
-                }
-            }
-
-
-            if (player.isGrabbed)
-            {
-                player.setPose(wave->getPosition() + player.grabOffset);
-
-                if (player.resistance >= player.resistanceMax)
-                {
-                    player.isGrabbed = false;
-                    player.resistance = 0.f;
-                }
-            }
-
-
-            float cameraTriggerY = screen_height * 0.4f;
-
-            if (player.getPose().y < cameraTriggerY)
-            {
-                float offset = cameraTriggerY - player.getPose().y;
-
-                player.setPose({ player.getPose().x, cameraTriggerY });
-
-                for (auto& p : platforms)
-                    p.setPosition({ p.getPosition().x, p.getPosition().y + offset });
-
-                sf::IntRect rect = background.getTextureRect();
-                rect.position.y -= offset;
-
-                if (rect.position.y < 0)
-                    rect.position.y = 0;
-
-                background.setTextureRect(rect);
-
-                score += static_cast<int>(offset);
-            }
-
-            player.warp();
-
-            if (player.getPose().y > screen_height)
-                currentState = GameState::Game_Over;
-
-            scoreText.setString("Score: " + std::to_string(score));
-
-
-            if (wave->isOffScreen(screen_width))
-            {
-                wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
-            };
-
-            break;
+        break;
 	}
     
    
@@ -344,8 +338,11 @@ void Game::render()
 
 
     case GameState::Main_Menu:
-        // Afficher le menu principal
-			break;
+
+        mainMenu.display();
+        mainMenu.update({ 0,0 });
+        mainMenu.draw(window);			
+        break;
 
     
     case GameState::Play:

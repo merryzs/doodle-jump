@@ -18,7 +18,11 @@ void Menu::Button::update_Hover(const sf::Vector2f& Mouse_Pose)
 
 bool Menu::Button::Clicked(const sf::Vector2f& Mouse_Pose) const
 {
-    return button_shape.getGlobalBounds().contains(Mouse_Pose);
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+    {
+        return button_shape.getGlobalBounds().contains(Mouse_Pose);
+
+    }
 }
 
 void Menu::Button::draw(sf::RenderWindow& window)
