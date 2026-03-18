@@ -7,6 +7,8 @@
 #include "GameState.h"
 #include "MainMenu.h"
 #include "Menu.h"
+#include "Defeat.h"
+#include "WinMenu.h"
 
 class Game
 {
@@ -36,6 +38,7 @@ private:
 
     sf::Texture waveTexture;
     std::optional<Wave> wave;
+
 
     int score = 0;
 

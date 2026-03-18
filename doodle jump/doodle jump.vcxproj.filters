@@ -9,6 +9,10 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="EnemyType.cpp" />
     <ClCompile Include="Wave.cpp" />
+    <ClCompile Include="Defeat.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="WinMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CollisionManager.h" />
@@ -19,5 +23,10 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="EnemyType.h" />
     <ClInclude Include="Wave.h" />
+    <ClInclude Include="Defeat.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="WinMenu.h" />
   </ItemGroup>
 </Project>

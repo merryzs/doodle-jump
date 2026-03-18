@@ -7,6 +7,7 @@ enum class GameState
     Play,
     Game_Over,
     Pause,
+    win
 };
 
 extern GameState currentState;

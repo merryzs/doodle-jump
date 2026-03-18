@@ -36,7 +36,5 @@ public:
     virtual void update(const sf::Vector2f Mouse_Pose) = 0;
     virtual void draw(sf::RenderWindow& window) = 0;
 
-    GameState handleInput(sf::RenderWindow& window,
-        const sf::Event& event,
-        GameState        curState);
+    GameState handleInput(sf::RenderWindow& window, const sf::Event& event, GameState curState);
 };

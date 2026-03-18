@@ -5,6 +5,9 @@
 #include "CollisionManager.h"
 #include "Wave.h"
 
+
+
+
 const float screen_width = 1080.f;
 const float screen_height = 1080.f;
 const int max_platforms = 8;
@@ -12,9 +15,13 @@ const int max_platforms = 8;
 
 Menu* currentMenu = nullptr;
 
+Defeat defeat;
+WinMenu win;
+
 Main_Menu mainMenu;
 
 GameState currentState;
+ 
 
 float randomPlatformX(float platformWidth)
 {
@@ -132,7 +139,8 @@ Game::Game()
             spawnPlatform(platforms, startY - i * spacing);
 
         player.display();
-
+        defeat.display();
+        win.display();
         score = 0;
 
 		currentState = GameState::Main_Menu;
@@ -208,7 +216,7 @@ void Game::processEvents()
         mainMenu.HandleClick(sf::Vector2f(sf::Mouse::getPosition(window)));
 	}
 
-    if (currentState == GameState::Game_Over)
+    if (currentState == GameState::Game_Over || currentState == GameState::win)
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
             reset();
@@ -223,7 +231,8 @@ void Game::processEvents()
 void Game::update()
 {
   
-    
+    float deltaTime = clock.restart().asSeconds();
+
     switch (currentState)
     {
     case GameState::Main_Menu:
@@ -231,7 +240,7 @@ void Game::update()
             break;
        
     case GameState::Play:
-        float deltaTime = clock.restart().asSeconds();
+        
 
 
         if (player.isGrabbed)
@@ -312,7 +321,14 @@ void Game::update()
         player.warp();
 
         if (player.getPose().y > screen_height)
+        {
             currentState = GameState::Game_Over;
+        }
+
+        if (score >= 30000)
+        {
+            currentState = GameState::win;
+        }
 
         scoreText.setString("Score: " + std::to_string(score));
 
@@ -346,7 +362,6 @@ void Game::render()
 
     
     case GameState::Play:
-				// Afficher le jeu
 
                 window.draw(background);
 
@@ -357,37 +372,20 @@ void Game::render()
                 player.draw(window);
 
                 window.draw(scoreText);
+
 				break;  
 
 
 	case GameState::Game_Over:
+        
+        
+        defeat.draw(window);
+        break;
 
-                sf::RectangleShape gameoverBackground(sf::Vector2f(1080, 1080));
-                gameoverBackground.setFillColor(sf::Color::Black);
+    case GameState::win:
 
-                sf::Text gameOverText(font);
-                gameOverText.setString("GAME OVER");
-                gameOverText.setCharacterSize(80);
-                gameOverText.setPosition({ 300,300 });
-                gameOverText.setFillColor(sf::Color::Red);
+        win.draw(window);
 
-                sf::Text resetText(font);
-                resetText.setString("Press Spacebar to reset");
-                resetText.setCharacterSize(40);
-                resetText.setPosition({ 350,600 });
-                resetText.setFillColor(sf::Color::Blue);
-
-                sf::Text closeText(font);
-                closeText.setString("Press Escape to quit");
-                closeText.setCharacterSize(40);
-                closeText.setPosition({ 350,800 });
-                closeText.setFillColor(sf::Color::Green);
-
-                window.draw(gameoverBackground);
-                window.draw(gameOverText);
-                window.draw(resetText);
-                window.draw(closeText);
-                break;
     }
  
 
