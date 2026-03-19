@@ -224,41 +224,41 @@ void Game::processEvents()
             window.close();
     }
 
+    sf::Vector2f mousePose(sf::Mouse::getPosition(window)); 
+
     switch (currentState)
     {
-
     case GameState::Main_Menu:
 
-            mainMenu.HandleClick(sf::Vector2f(sf::Mouse::getPosition(window)));
-
-			break;
-
-	case GameState::Game_Over:
-
-            defeat.HandleClick(sf::Vector2f(sf::Mouse::getPosition(window)));
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-                reset();
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-                window.close();
-            break;
-
-	case GameState::win:
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-                reset();
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-                window.close();
+		//permet de reset quand on clic sur play
+        mainMenu.HandleClick(mousePose); 
+        if (mainMenu.clickedrestart)
+        {
+            reset();
+            mainMenu.clickedrestart = false;
+        }
         break;
-    }
- 
 
-    if (currentState == GameState::Game_Over || currentState == GameState::win)
-    {
+    case GameState::Game_Over:
+		//la same que juste au dessus mais pour le menu de défaite
+
+        defeat.HandleClick(mousePose); 
+        if (defeat.clickedrestart)
+        {
+            reset();
+            defeat.clickedrestart = false;
+        }
+        break;
+
+    case GameState::win:
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
             reset();
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
             window.close();
+        break;
     }
+
+    
 }
 
 void Game::update()

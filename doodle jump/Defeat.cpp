@@ -9,27 +9,16 @@ Defeat::Defeat()
 	backTexture("images/back.png"),
 	backSprite(backTexture),
 	restart("images/start.png"),
-	restartSprite(restart)
+	restartSprite(restart),
+	Exit("images/leave.png"),
+	ExitSprite(Exit)
+
 {
 
-
-	if (!font.openFromFile("C:/Windows/Fonts/arial.ttf"))
-		std::cerr << "Impossible de charger la police\n";
 
 	backSprite.setTexture(backTexture);
 	restartSprite.setTexture(restart);
 	backSprite.setScale({ 0.6f, 0.6f });
-
-	ResetText.setString("Press Spacebar to reset");
-	ResetText.setCharacterSize(40);
-	ResetText.setPosition({ 350,600 });
-	ResetText.setFillColor(sf::Color::Blue);
-
-
-	CloseText.setString("Press Escape to quit");
-	CloseText.setCharacterSize(40);
-	CloseText.setPosition({ 350,800 });
-	CloseText.setFillColor(sf::Color::Green);
 
 	backSprite.setScale({ 0.6f, 0.6f });
 
@@ -50,6 +39,8 @@ void Defeat::create_Buttons()
 {
 	clear_Buttons();
 	defeatButtons.push_back(new Menu::Button("Restart", StartPos, StartSize, &restart));
+	defeatButtons.push_back(new Menu::Button("Menu", { StartPos.x, StartPos.y + 150.f }, StartSize, &restart));
+	defeatButtons.push_back(new Menu::Button("Exit", { StartPos.x, StartPos.y + 300.f }, StartSize, &Exit));
 }
 
 
@@ -69,7 +60,16 @@ void Defeat::update(const sf::Vector2f Mouse_Pose)
 void Defeat::HandleClick(const sf::Vector2f Mouse_Pose) {
 	if (defeatButtons[0]->Clicked(Mouse_Pose))
 	{
+		clickedrestart = true;
 		currentState = GameState::Play;
+	}
+	else if (defeatButtons[1]->Clicked(Mouse_Pose))
+	{
+		currentState = GameState::Main_Menu;
+	}
+	else if (defeatButtons[2]->Clicked(Mouse_Pose))
+	{
+		exit(0);	
 	}
 
 }
@@ -84,9 +84,7 @@ void Defeat::draw(sf::RenderWindow& window)
 	window.draw(backSprite);
 	for (auto* button : defeatButtons)
 		button->draw(window);
-	window.draw(Text);
-	window.draw(ResetText);
-	window.draw(CloseText);
+
 
 
 

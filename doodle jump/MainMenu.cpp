@@ -62,6 +62,8 @@ void Main_Menu::HandleClick(const sf::Vector2f Mouse_Pose)
 
     if (MainMenuButtons[0]->Clicked(Mouse_Pose))
     {
+        clickedrestart = true;
+
         currentState = GameState::Play;
     }
 

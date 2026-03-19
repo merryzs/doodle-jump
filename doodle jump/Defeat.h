@@ -29,7 +29,8 @@ private:
 	sf::Vector2f StartPos{ 350.f ,  350.f };
 	sf::Vector2f StartSize{ 400.f , 300.f };
 
-
+	sf::Texture Exit;
+	sf::Sprite ExitSprite;
 
 public:
 
