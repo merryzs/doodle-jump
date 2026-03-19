@@ -1,5 +1,5 @@
 #pragma once
-#include "lib.h"
+#include "lib.h" 
 #include "Player.h"
 #include "Platform.h"
 #include "CollisionManager.h"
@@ -9,8 +9,10 @@
 #include "Menu.h"
 #include "Defeat.h"
 #include "WinMenu.h"
-#include "Enemy.h"
 #include "PlatformType.h"
+#include "Random.h"
+#include "Enemy.h"
+
 
 class Game
 {
