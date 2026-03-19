@@ -14,14 +14,6 @@ Main_Menu::Main_Menu()
 
 
 {
-    if (!background_texture.loadFromFile("images/backmenu.png"))
-        std::cerr << "Erreur: backmenu.png\n";
-
-    if (!Start.loadFromFile("images/start.png"))
-        std::cerr << "Erreur: start.png\n";
-
-    if (!Exit.loadFromFile("images/leave.png"))
-        std::cerr << "Erreur: leave.png\n";
 
 	background_sprite.setScale({0.6, 0.6});
 
@@ -70,6 +62,8 @@ void Main_Menu::HandleClick(const sf::Vector2f Mouse_Pose)
 
     if (MainMenuButtons[0]->Clicked(Mouse_Pose))
     {
+        clickedrestart = true;
+
         currentState = GameState::Play;
     }
 

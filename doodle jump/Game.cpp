@@ -225,14 +225,39 @@ void Game::processEvents()
         mainMenu.HandleClick(sf::Vector2f(sf::Mouse::getPosition(window)));
     }
 
-    if (currentState == GameState::Game_Over || currentState == GameState::win)
+    switch (currentState)
     {
+    case GameState::Main_Menu:
+
+		//permet de reset quand on clic sur play
+        mainMenu.HandleClick(mousePose); 
+        if (mainMenu.clickedrestart)
+        {
+            reset();
+            mainMenu.clickedrestart = false;
+        }
+        break;
+
+    case GameState::Game_Over:
+		//la same que juste au dessus mais pour le menu de d�faite
+
+        defeat.HandleClick(mousePose); 
+        if (defeat.clickedrestart)
+        {
+            reset();
+            defeat.clickedrestart = false;
+        }
+        break;
+
+    case GameState::win:
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
             reset();
-
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
             window.close();
+        break;
     }
+
+    
 }
 
 void Game::update()
@@ -257,12 +282,19 @@ void Game::update()
         case GameState::Main_Menu:
             mainMenu.update(sf::Vector2f(sf::Mouse::getPosition(window)));
             break;
-
-        case GameState::Play:
-
-
-
-            if (player.isGrabbed)
+       
+    case GameState::Play:
+    {
+        if (player.isGrabbed)
+        {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+            {
+                player.resistance += 1.5f;
+            }
+            else
             {
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) ||
                     sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) ||
@@ -385,10 +417,14 @@ void Game::update()
             {
                 wave->update(deltaTime, slow);
 
-                if (wave->isOffScreen(screen_height))
-                {
-                    waveActive = false;
-                }
+        break;
+    }
+
+    case GameState::Game_Over:
+
+        defeat.update(sf::Vector2f(sf::Mouse::getPosition(window)));	
+        break;
+	}
 
                 break;
             }
@@ -422,10 +458,8 @@ void Game::update()
             {
             case GameState::Main_Menu:
 
-                mainMenu.display();
-                mainMenu.update({ 0,0 });
-                mainMenu.draw(window);
-                break;
+        mainMenu.draw(window);
+        break;
 
             case GameState::Play:
 
@@ -446,9 +480,9 @@ void Game::update()
 
                 window.draw(scoreText);
 
-                break;
-
-            case GameState::Game_Over:
+    case GameState::Game_Over:
+        defeat.draw(window);
+        break;
 
                 defeat.draw(window);
                 break;
