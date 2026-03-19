@@ -10,6 +10,8 @@ public:
     struct Button
     {
         sf::RectangleShape button_shape;
+        sf::Texture*       button_texture;
+		sf::Sprite*		   button_sprite;
         std::string        lab;
         bool               hover;
         sf::Vector2f       pos;
@@ -17,14 +19,15 @@ public:
 
         Button(const std::string& lab,
             const sf::Vector2f& pos,
-            const sf::Vector2f& size);
+            const sf::Vector2f& size,
+            sf::Texture* button_Texture = nullptr);
 
         virtual void update_Hover(const sf::Vector2f& Mouse_Pose);
         bool Clicked(const sf::Vector2f& Mouse_Pose) const;
 
 
         virtual void draw(sf::RenderWindow& window);
-        virtual ~Button() = default;
+        virtual ~Button();
 
 
     };
