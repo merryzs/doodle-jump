@@ -11,6 +11,7 @@
 #include "WinMenu.h"
 #include "Enemy.h"
 #include "PlatformType.h"
+#include "Random.h"
 
 class Game
 {
@@ -48,7 +49,13 @@ private:
 
 
     sf::Texture waveTexture;
-    std::optional<Wave> wave;
+
+    std::unique_ptr<Wave> wave;
+    bool waveActive = false;
+    int nextWaveScore = 1500;
+    int waveScoreGap = 1500;
+
+
 
 
     int score = 0;

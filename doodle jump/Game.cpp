@@ -1,7 +1,5 @@
 #include "Game.h"
 
-const float screen_width = 1080.f;
-const float screen_height = 1080.f;
 const int max_platforms = 8;
 
 Menu* currentMenu = nullptr;
@@ -10,23 +8,6 @@ Defeat defeat;
 WinMenu win;
 Main_Menu mainMenu;
 GameState currentState;
-
-
-float randomPlatformX(float platformWidth)
-{
-    float halfScreen = screen_width / 2.f;
-
-    if (sideDist(rng) == 0)
-    {
-        std::uniform_real_distribution<float> dist(0.f, halfScreen - platformWidth);
-        return dist(rng);
-    }
-    else
-    {
-        std::uniform_real_distribution<float> dist(halfScreen, screen_width - platformWidth);
-        return dist(rng);
-    }
-}
 
 void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width, float height)
 {
@@ -39,7 +20,7 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width,
         float x = randomPlatformX(width);
         PlatformType type = randomPlatformType();
 
-        Platform newPlat({ x, y }, { width, height }, type);
+        Platform newPlat(sf::Vector2f(x, y), sf::Vector2f(width, height), type);
         sf::FloatRect newBounds = newPlat.getBounds();
 
         bool overlaps = false;
@@ -77,11 +58,11 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width,
         }
     }
 
-    platforms.emplace_back(
+    platforms.push_back(Platform(
         sf::Vector2f(randomPlatformX(width), y),
         sf::Vector2f(width, height),
         randomPlatformType()
-    );
+    ));
 }
 
 void Game::spawnEnemy(float y, EnemyType type)
@@ -125,8 +106,7 @@ Game::Game()
         std::cerr << "Impossible de charger la texture de la vague\n";
 
 
-    wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
-
+    wave = std::make_unique<Wave>(waveTexture, 1200.f, 400.f, sf::Vector2f(-250.f, 0.f));
 
     auto size = backgroundTexture.getSize();
     background.setTextureRect(sf::IntRect({ 0, (int)size.y - (int)screen_height },
@@ -186,7 +166,7 @@ void Game::reset()
             scoreText.setString("Score: 0");
 
 
-            wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
+            wave = std::make_unique<Wave>(waveTexture, 1200.f, 400.f, sf::Vector2f(-250.f, 0.f));
 }
 
 void Game::run()
@@ -385,7 +365,7 @@ void Game::update()
 
         if (wave->isOffScreen(screen_width))
         {
-            wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
+            wave = std::make_unique<Wave>(waveTexture, 1200.f, 400.f, sf::Vector2f(-250.f, 0.f));
         };
 
         break;

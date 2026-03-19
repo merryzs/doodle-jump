@@ -1,9 +1,7 @@
 #include "PlatformType.h"
 #include "lib.h"
+#include "Random.h"
 
-
-std::mt19937 rng(std::random_device{}());
-std::uniform_int_distribution<int> sideDist(0, 1);
 
 PlatformType randomPlatformType()
 {

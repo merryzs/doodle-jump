@@ -138,6 +138,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Random.cpp" />
     <ClCompile Include="Wave.cpp" />
     <ClCompile Include="WinMenu.cpp" />
   </ItemGroup>
@@ -152,6 +153,7 @@
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlatformType.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClInclude Include="Random.h" />
     <ClInclude Include="Wave.h" />
     <ClInclude Include="WinMenu.h" />
   </ItemGroup>
