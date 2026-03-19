@@ -1,6 +1,4 @@
 #include "CollisionManager.h"
-#include "Player.h"
-#include "Platform.h"
 
 void CollisionManager::handle(Player& player, std::vector<Platform>& platforms)
 {
@@ -12,9 +10,7 @@ void CollisionManager::handle(Player& player, std::vector<Platform>& platforms)
 
     for (auto& platform : platforms)
     {
-        sf::Vector2f platPos = platform.getPosition();
-        sf::Vector2f platSize = platform.getSize();
-        sf::FloatRect platRect(platPos, platSize);
+        sf::FloatRect platRect = platform.getBounds();
 
         if (auto inter = playerRect.findIntersection(platRect))
         {

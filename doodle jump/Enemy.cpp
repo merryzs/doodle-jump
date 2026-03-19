@@ -1,22 +1,16 @@
 #include "Enemy.h"
-#include <iostream>
 
 Enemy::Enemy(sf::Vector2f pos, EnemyType enemyType) 
     : position(pos), 
     type(enemyType), 
     speed(250.f), 
     direction(1), 
-    active(true),  
+    active(true),
+    StaticMob("images/redMonster.png"),
+    MoveMob("images/greenMonster.png"),
     StaticMobSprite(StaticMob), 
     MoveMobSprite(MoveMob)
-{ 
-
-    if (!StaticMob.loadFromFile("images/redMonster.png"))
-        std::cerr << "Erreur: redMonster.png introuvable\n";
-    if (!MoveMob.loadFromFile("images/greenMonster.png"))
-        std::cerr << "Erreur: greenMonster.png introuvable\n";
-
-
+{
     StaticMobSprite.setPosition(position);
     StaticMobSprite.setScale({ 1.f, 1.f });
 
@@ -58,6 +52,8 @@ void Enemy::update(float deltaTime)
 
 void Enemy::draw(sf::RenderWindow& window)
 {
+
+    if (!active) return;
 
     if (type == EnemyType::Static)
         window.draw(StaticMobSprite);

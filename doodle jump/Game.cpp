@@ -31,8 +31,8 @@ float randomPlatformX(float platformWidth)
 void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width, float height)
 {
     const int MAX_TRIES = 20;
-    const float MIN_VERTICAL_GAP = 100.f;
-    const float MIN_HORIZONTAL_GAP = 100.f;
+    const float MIN_VERTICAL_GAP = 200.f;
+    const float MIN_HORIZONTAL_GAP = 200.f;
 
     for (int i = 0; i < MAX_TRIES; i++)
     {
@@ -154,6 +154,8 @@ Game::Game()
         float spacing = 150.f;
         float startY = screen_height - 50.f;
 
+        Platform::loadTexture();
+
         for (int i = 0; i < max_platforms; i++)
             spawnPlatform(platforms, startY - i * spacing);
 
@@ -172,6 +174,8 @@ void Game::reset()
             player.reset();
 
             platforms.clear();
+            enemies.clear();
+
 
             float spacing = 150.f;
             float startY = screen_height - 50.f;
@@ -309,6 +313,9 @@ void Game::update()
             for (auto& p : platforms)
                 p.setPosition({ p.getPosition().x, p.getPosition().y + offset });
 
+            for (auto& e : enemies)
+                e->setPosition({ e->getPosition().x, e->getPosition().y + offset });
+
             sf::IntRect rect = background.getTextureRect();
             rect.position.y -= offset;
 
@@ -327,7 +334,7 @@ void Game::update()
             currentState = GameState::Game_Over;
         }
 
-        if (score >= 30000)
+        if (score >= 25000)
         {
             currentState = GameState::win;
         }
