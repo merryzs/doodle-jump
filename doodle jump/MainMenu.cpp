@@ -3,7 +3,32 @@
 
 
 Main_Menu::Main_Menu()
+    :background_texture("images/backmenu.png"),
+    background_sprite(background_texture),
+    Start("images/start.png"),
+    Start_Sprite(Start),
+    Exit("images/leave.png"),
+    Exit_Sprite(Exit),
+	Sound("images/Sound.png"),
+	Sound_Sprite(Sound)
+
+
 {
+    if (!background_texture.loadFromFile("images/backmenu.png"))
+        std::cerr << "Erreur: backmenu.png\n";
+
+    if (!Start.loadFromFile("images/start.png"))
+        std::cerr << "Erreur: start.png\n";
+
+    if (!Exit.loadFromFile("images/leave.png"))
+        std::cerr << "Erreur: leave.png\n";
+
+	background_sprite.setScale({0.6, 0.6});
+
+	Start_Sprite.setScale({ 2.f, 2.f });
+	Exit_Sprite.setScale({ 2.f, 2.f });
+
+
     create_Buttons();
 }
 
@@ -22,8 +47,9 @@ void Main_Menu::clear_Buttons()
 void Main_Menu::create_Buttons()
 {
     clear_Buttons();
-    MainMenuButtons.push_back(new Menu::Button("Play", { 300.f, 200.f }, { 200.f, 50.f }));
-    MainMenuButtons.push_back(new Menu::Button("Exit", { 300.f, 300.f }, { 200.f, 50.f }));
+    MainMenuButtons.push_back(new Menu::Button("Play", StartPos, StartSize, &Start));
+    MainMenuButtons.push_back(new Menu::Button("Exit", ExitPos, ExitSize, &Exit));
+	MainMenuButtons.push_back(new Menu::Button("Sound", SoundPos, SoundSize, &Sound));
 }
 
 void Main_Menu::display()
@@ -55,6 +81,7 @@ void Main_Menu::HandleClick(const sf::Vector2f Mouse_Pose)
 
 void Main_Menu::draw(sf::RenderWindow& window)
 {
+	window.draw(background_sprite);
     for (auto* button : MainMenuButtons)
         button->draw(window);
 }
