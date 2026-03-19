@@ -1,5 +1,5 @@
 #pragma once
-#include "lib.h"
+#include "lib.h" 
 #include "Player.h"
 #include "Platform.h"
 #include "CollisionManager.h"
@@ -9,8 +9,10 @@
 #include "Menu.h"
 #include "Defeat.h"
 #include "WinMenu.h"
-#include "Enemy.h"
 #include "PlatformType.h"
+#include "Random.h"
+#include "Enemy.h"
+
 
 class Game
 {
@@ -24,6 +26,7 @@ private:
     void render();
     void reset();
     void spawnPlatform(std::vector<Platform>& platforms, float y, float width = 120.f, float height = 20.f);
+    void spawnWave();
 
 private:
     sf::RenderWindow window;
@@ -47,8 +50,13 @@ private:
     void checkEnemyCollisions();
 
 
+    
+
+    std::unique_ptr<Wave> wave;
     sf::Texture waveTexture;
-    std::optional<Wave> wave;
+    bool waveActive = false;   
+    int nextWaveScore = 1500;   
+    int waveScoreGap = 1500;
 
 
     int score = 0;
