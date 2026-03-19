@@ -131,16 +131,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Draw.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="Defeat.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Setup.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Wave.cpp" />
+    <ClCompile Include="WinMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Draw.h" />
+    <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="Defeat.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="Platform.h" />
+    <ClCompile Include="Platform.cpp" />
+    <ClCompile Include="PlatformType.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClInclude Include="Random.h" />
+    <ClInclude Include="Wave.h" />
+    <ClInclude Include="WinMenu.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game.h" />
     <ClInclude Include="lib.h" />
+    <ClInclude Include="PlatformType.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Setup.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
