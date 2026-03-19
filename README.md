@@ -21,6 +21,8 @@ you play a fallen angel who's trying to return in heaven from the hell.
 | Arrow keys | Resist the wave when grabbed |
 | Space | Restart (on win screen) |
 | Escape | Quit (on win screen) |
+| Buttons | On the others menus|
+
 
 ## Built With
 
