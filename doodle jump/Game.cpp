@@ -1,6 +1,8 @@
 ﻿#include "Game.h"
 
+
 const int max_platforms = 10;
+GameState currentState = GameState::Main_Menu;
 
 void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width, float height)
 {
@@ -102,7 +104,8 @@ void Game::spawnWave()
 }
 
 Game::Game()
-    : window(sf::VideoMode({ (int)screen_width,(int)screen_height }), "Doodle Jump"),
+
+    : window(sf::VideoMode({ (unsigned int)screen_width,(unsigned int)screen_height }), "Doodle Jump"),
     backgroundTexture("images/background.png"),
     background(backgroundTexture),
     scoreText(font)
