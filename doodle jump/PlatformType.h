@@ -11,7 +11,6 @@ enum class PlatformType
 };
 
 PlatformType randomPlatformType();
-sf::Color colorFromType(PlatformType type);
 
 extern std::mt19937 rng;
 extern std::uniform_int_distribution<int> sideDist;

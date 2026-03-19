@@ -1,6 +1,4 @@
 #include "CollisionManager.h"
-#include "Player.h"
-#include "Platform.h"
 
 void CollisionManager::handle(Player& player, std::vector<Platform>& platforms)
 {
@@ -12,23 +10,21 @@ void CollisionManager::handle(Player& player, std::vector<Platform>& platforms)
 
     for (auto& platform : platforms)
     {
-        sf::Vector2f platPos = platform.getPosition();
-        sf::Vector2f platSize = platform.getSize();
-        sf::FloatRect platRect(platPos, platSize);
+        sf::FloatRect platRect = platform.getBounds();
 
         if (auto inter = playerRect.findIntersection(platRect))
         {
-            
+
             if (inter->size.y < inter->size.x && player.getVelocityY() > 0.f)
             {
-                
+
                 if (platform.getType() == PlatformType::Breakable)
                 {
                     platform.breakPlatform();
                     continue;
                 }
 
-                
+
                 if (platform.getType() == PlatformType::Bouncy)
                 {
                     player.setVelocityY(-1200.f);
@@ -36,7 +32,7 @@ void CollisionManager::handle(Player& player, std::vector<Platform>& platforms)
                     continue;
                 }
 
-                
+
                 player.setPose({
                     pPos.x,
                     platRect.position.y - pSize.y

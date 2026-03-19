@@ -15,20 +15,3 @@ PlatformType randomPlatformType()
     else if (p < 95) return PlatformType::Bouncy;// 10
     else return PlatformType::Breakable; // 5
 }
-
-sf::Color colorFromType(PlatformType type)
-{
-    switch (type)
-    {
-    case PlatformType::Normal:
-        return sf::Color::Cyan;
-    case PlatformType::Moving:
-        return sf::Color::Blue;
-    case PlatformType::Breakable:
-        return sf::Color::Red;
-    case PlatformType::Bouncy:
-        return sf::Color::Green;
-    default:
-        return sf::Color::White;
-    }
-}

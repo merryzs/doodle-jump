@@ -38,6 +38,13 @@ private:
     sf::Text scoreText;
 
     Player player;
+    Defeat defeat;
+    WinMenu win;
+    Main_Menu mainMenu;
+    GameState currentState;
+
+    sf::Vector2f mousePose;
+
     std::vector<Platform> platforms;
     CollisionManager collisionManager;
 
@@ -47,10 +54,7 @@ private:
     int lastEnemyScore = 0;
 
     void spawnEnemy(float y, EnemyType type);
-    void checkEnemyCollisions();
-
-
-    
+    void checkEnemyCollisions();    
 
     std::unique_ptr<Wave> wave;
     sf::Texture waveTexture;
