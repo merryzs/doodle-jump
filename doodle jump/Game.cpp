@@ -1,37 +1,20 @@
-#include "Game.h"
+﻿#include "Game.h"
 #include "Platform.h"
 #include "PlatformType.h"
 #include "lib.h"
 #include "CollisionManager.h"
 #include "Wave.h"
+#include "Random.h"
 
-const float screen_width = 1080.f;
-const float screen_height = 1080.f;
-const int max_platforms = 8;
-
-float randomPlatformX(float platformWidth)
-{
-    float halfScreen = screen_width / 2.f;
-
-    if (sideDist(rng) == 0)
-    {
-        std::uniform_real_distribution<float> dist(0.f, halfScreen - platformWidth);
-        return dist(rng);
-    }
-    else
-    {
-        std::uniform_real_distribution<float> dist(halfScreen, screen_width - platformWidth);
-        return dist(rng);
-    }
-}
+const int max_platforms = 10;
 
 void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width, float height)
 {
-    const int MAX_TRIES = 20;
-    const float MIN_VERTICAL_GAP = 100.f;
-    const float MIN_HORIZONTAL_GAP = 100.f;
+    const int Max_tries = 20;
+    const float Min_Vertical_gap = 200.f;
+    const float Min_Horizontal_gap = 200.f;
 
-    for (int i = 0; i < MAX_TRIES; i++)
+    for (int i = 0; i < Max_tries; i++)
     {
         float x = randomPlatformX(width);
         PlatformType type = randomPlatformType();
@@ -45,6 +28,7 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width,
         {
             sf::FloatRect other = p.getBounds();
 
+            
             if (auto inter = newBounds.findIntersection(other))
             {
                 if (inter->size.x > 0 && inter->size.y > 0)
@@ -54,13 +38,13 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width,
                 }
             }
 
-            if (std::abs(p.getPosition().y - y) < MIN_VERTICAL_GAP)
+            if (std::abs(p.getPosition().y - y) < Min_Vertical_gap)
             {
                 overlaps = true;
                 break;
             }
 
-            if (std::abs(p.getPosition().x - x) < MIN_HORIZONTAL_GAP)
+            if (std::abs(p.getPosition().x - x) < Min_Horizontal_gap)
             {
                 overlaps = true;
                 break;
@@ -81,6 +65,19 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width,
     );
 }
 
+void Game::spawnWave()
+{
+    float x = RandomXWave(0.f, screen_width);
+
+    wave = std::make_unique<Wave>(waveTexture, x, 0.f, sf::Vector2f{ 0.f, 250.f });
+
+    wave->setRotation(90.f);
+
+    waveActive = true;
+
+    nextWaveScore += waveScoreGap;
+}
+
 Game::Game()
     : window(sf::VideoMode({ (int)screen_width,(int)screen_height }), "Doodle Jump"),
     backgroundTexture("images/background.png"),
@@ -89,25 +86,18 @@ Game::Game()
 {
     window.setFramerateLimit(60);
 
-   
     if (!waveTexture.loadFromFile("images/wave.png"))
         std::cerr << "Impossible de charger la texture de la vague\n";
 
-    
-    wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
-
-   
     auto size = backgroundTexture.getSize();
     background.setTextureRect(sf::IntRect({ 0, (int)size.y - (int)screen_height },
         { (int)screen_width, (int)screen_height }));
 
-   
     sf::View view;
     view.setSize({ screen_width, screen_height });
     view.setCenter({ screen_width / 2.f, screen_height / 2.f });
     window.setView(view);
 
-  
     if (!font.openFromFile("C:/Windows/Fonts/arial.ttf"))
         std::cerr << "Impossible de charger la police\n";
 
@@ -116,7 +106,6 @@ Game::Game()
     scoreText.setFillColor(sf::Color::Black);
     scoreText.setString("Score: 0");
 
-   
     platforms.clear();
 
     float spacing = 150.f;
@@ -129,6 +118,9 @@ Game::Game()
 
     score = 0;
     gameover = false;
+
+   
+    waveActive = false;
 }
 
 void Game::reset()
@@ -137,6 +129,8 @@ void Game::reset()
     gameover = false;
 
     player.reset();
+    player.isGrabbed = false;
+    player.resistance = 0.f;
 
     platforms.clear();
 
@@ -152,8 +146,8 @@ void Game::reset()
 
     scoreText.setString("Score: 0");
 
-   
-    wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
+    waveActive = false;
+    nextWaveScore = 1500;
 }
 
 void Game::run()
@@ -163,7 +157,6 @@ void Game::run()
         processEvents();
         update();
 
-        
         for (size_t i = 0; i < platforms.size();)
         {
             if (platforms[i].getPosition().y > screen_height)
@@ -203,7 +196,6 @@ void Game::update()
 {
     float deltaTime = clock.restart().asSeconds();
 
-    
     if (player.isGrabbed)
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) ||
@@ -211,7 +203,7 @@ void Game::update()
             sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) ||
             sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
         {
-            player.resistance += 1.5f;
+            player.resistance += 10.f;
         }
         else
         {
@@ -221,21 +213,20 @@ void Game::update()
         player.resistance = std::clamp(player.resistance, 0.f, player.resistanceMax);
     }
 
-    
     float slow = 1.f - (player.resistance / player.resistanceMax) * player.slowFactor;
 
-   
-    wave->update(deltaTime, slow);
-
-    
     for (auto& p : platforms)
         p.update(deltaTime);
 
-  
     player.updates(deltaTime);
 
+    std::cout << "score=" << score
+        << " nextWaveScore=" << nextWaveScore
+        << " gap=" << waveScoreGap
+        << " waveActive=" << waveActive << "\n";
+
     
-    if (!player.isGrabbed)
+    if (!player.isGrabbed && waveActive)
     {
         if (auto inter = wave->getHitbox().findIntersection(player.getHitbox()))
         {
@@ -244,7 +235,6 @@ void Game::update()
         }
     }
 
-   
     if (player.isGrabbed)
     {
         player.setPose(wave->getPosition() + player.grabOffset);
@@ -256,7 +246,6 @@ void Game::update()
         }
     }
 
-   
     float cameraTriggerY = screen_height * 0.4f;
 
     if (player.getPose().y < cameraTriggerY)
@@ -286,10 +275,19 @@ void Game::update()
 
     scoreText.setString("Score: " + std::to_string(score));
 
-   
-    if (wave->isOffScreen(screen_width))
+    if (!waveActive && score >= nextWaveScore)
     {
-        wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
+        spawnWave();
+    }
+
+    if (waveActive)
+    {
+        wave->update(deltaTime, slow);
+
+        if (wave->isOffScreen(screen_height))
+        {
+            waveActive = false;
+        }
     }
 }
 
@@ -302,7 +300,9 @@ void Game::render()
     for (const auto& platform : platforms)
         platform.draw(window);
 
-    wave->draw(window);
+    if (waveActive)
+        wave->draw(window);
+
     player.draw(window);
 
     window.draw(scoreText);

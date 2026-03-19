@@ -6,10 +6,12 @@
 #include <SFML/Audio.hpp>
 
 
+
 #include <iostream>
 #include <optional>
 #include <string>
 #include <random>
+#include <memory>
 
 
 #include <functional>

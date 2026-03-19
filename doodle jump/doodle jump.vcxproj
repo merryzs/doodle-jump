@@ -144,6 +144,7 @@
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlatformType.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClInclude Include="Random.h" />
     <ClInclude Include="Wave.h" />
   </ItemGroup>
   <ItemGroup>

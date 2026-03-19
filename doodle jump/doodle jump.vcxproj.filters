@@ -19,5 +19,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="EnemyType.h" />
     <ClInclude Include="Wave.h" />
+    <ClInclude Include="Random.h" />
   </ItemGroup>
 </Project>

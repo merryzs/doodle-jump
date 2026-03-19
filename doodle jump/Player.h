@@ -35,6 +35,8 @@ public:
   
     sf::RectangleShape hitbox;
 
+   
+
 private:
     sf::Texture textureRight;
     sf::Texture textureLeft;
@@ -43,8 +45,8 @@ private:
 
     sf::Vector2f pose = { 375.f, 500.f };
     float speed = 300.f;
-    float gravity = 900.f;
-    float jumpStrength = -600.f;
+    float gravity = 1500.f;
+    float jumpStrength = -1000.f;
     float velocityY = 0.f;
 
     bool isGrounded = false;

@@ -17,6 +17,7 @@ private:
     void render();
     void reset();
     void spawnPlatform(std::vector<Platform>& platforms, float y, float width = 120.f, float height = 20.f);
+    void spawnWave();
 
 private:
     sf::RenderWindow window;
@@ -31,8 +32,13 @@ private:
     std::vector<Platform> platforms;
     CollisionManager collisionManager;
 
+    
+
+    std::unique_ptr<Wave> wave;
     sf::Texture waveTexture;
-    std::optional<Wave> wave;
+    bool waveActive = false;   
+    int nextWaveScore = 1500;   
+    int waveScoreGap = 1500;
 
     int score = 0;
     bool gameover = false;
