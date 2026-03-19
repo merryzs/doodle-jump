@@ -224,16 +224,38 @@ void Game::processEvents()
             window.close();
     }
 
-    if (currentState == GameState::Main_Menu)
+    switch (currentState)
     {
-        mainMenu.HandleClick(sf::Vector2f(sf::Mouse::getPosition(window)));
-	}
+
+    case GameState::Main_Menu:
+
+            mainMenu.HandleClick(sf::Vector2f(sf::Mouse::getPosition(window)));
+
+			break;
+
+	case GameState::Game_Over:
+
+            defeat.HandleClick(sf::Vector2f(sf::Mouse::getPosition(window)));
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+                reset();
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+                window.close();
+            break;
+
+	case GameState::win:
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+                reset();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+                window.close();
+        break;
+    }
+ 
 
     if (currentState == GameState::Game_Over || currentState == GameState::win)
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
             reset();
-
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
             window.close();
     }
@@ -250,9 +272,7 @@ void Game::update()
             break;
        
     case GameState::Play:
-        
-
-
+    {
         if (player.isGrabbed)
         {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) ||
@@ -369,6 +389,12 @@ void Game::update()
         };
 
         break;
+    }
+
+    case GameState::Game_Over:
+
+        defeat.update(sf::Vector2f(sf::Mouse::getPosition(window)));	
+        break;
 	}
 
     scoreText.setString("Score: " + std::to_string(score));
@@ -400,8 +426,6 @@ void Game::render()
     {
     case GameState::Main_Menu:
 
-        mainMenu.display();
-        mainMenu.update({ 0,0 });
         mainMenu.draw(window);
         break;
 
@@ -423,7 +447,6 @@ void Game::render()
         break;
 
     case GameState::Game_Over:
-
         defeat.draw(window);
         break;
 
