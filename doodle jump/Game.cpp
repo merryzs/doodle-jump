@@ -65,6 +65,35 @@ void Game::spawnPlatform(std::vector<Platform>& platforms, float y, float width,
     );
 }
 
+void Game::spawnEnemy(float y, EnemyType type)
+{
+    const float MIN_DISTANCE_X = 300.f;
+    const int MAX_TRIES = 10;
+
+    float x = 0.f;
+    bool valid = false;
+
+    for (int i = 0; i < MAX_TRIES; i++)
+    {
+        x = static_cast<float>(rand() % 900 + 50);
+        valid = true;
+
+        for (auto& e : enemies)
+        {
+            if (std::abs(e->getPosition().x - x) < MIN_DISTANCE_X)
+            {
+                valid = false;
+                break;
+            }
+        }
+
+        if (valid)
+            break;
+    }
+
+    enemies.emplace_back(std::make_unique<Enemy>(sf::Vector2f(x, y), type));
+}
+
 void Game::spawnWave()
 {
     float x = RandomXWave(0.f, screen_width);
@@ -101,18 +130,21 @@ Game::Game()
     if (!font.openFromFile("C:/Windows/Fonts/arial.ttf"))
         std::cerr << "Impossible de charger la police\n";
 
-    scoreText.setCharacterSize(32);
-    scoreText.setPosition({ 20,20 });
-    scoreText.setFillColor(sf::Color::Black);
-    scoreText.setString("Score: 0");
+        scoreText.setCharacterSize(32);
+        scoreText.setPosition({ 20,20 });
+        scoreText.setFillColor(sf::Color::Black);
+        scoreText.setString("Score: 0");
 
     platforms.clear();
 
-    float spacing = 150.f;
-    float startY = screen_height - 50.f;
+        platforms.clear();
+        enemies.clear();
 
-    for (int i = 0; i < max_platforms; i++)
-        spawnPlatform(platforms, startY - i * spacing);
+        float spacing = 150.f;
+        float startY = screen_height - 50.f;
+
+        for (int i = 0; i < max_platforms; i++)
+            spawnPlatform(platforms, startY - i * spacing);
 
     player.display();
 
@@ -121,6 +153,12 @@ Game::Game()
 
    
     waveActive = false;
+        player.display();
+        defeat.display();
+        win.display();
+        score = 0;
+
+		currentState = GameState::Main_Menu;
 }
 
 void Game::reset()
@@ -131,20 +169,23 @@ void Game::reset()
     player.reset();
     player.isGrabbed = false;
     player.resistance = 0.f;
+            score = 0;
+            currentState = GameState::Play;
+            player.reset();
 
-    platforms.clear();
+            platforms.clear();
 
-    float spacing = 150.f;
-    float startY = screen_height - 50.f;
+            float spacing = 150.f;
+            float startY = screen_height - 50.f;
 
-    for (int i = 0; i < max_platforms; i++)
-        spawnPlatform(platforms, startY - i * spacing);
+            for (int i = 0; i < max_platforms; i++)
+                spawnPlatform(platforms, startY - i * spacing);
 
-    auto size = backgroundTexture.getSize();
-    background.setTextureRect(sf::IntRect({ 0, (int)size.y - (int)screen_height },
-        { (int)screen_width, (int)screen_height }));
+            auto size = backgroundTexture.getSize();
+            background.setTextureRect(sf::IntRect({ 0, (int)size.y - (int)screen_height },
+                { (int)screen_width, (int)screen_height }));
 
-    scoreText.setString("Score: 0");
+            scoreText.setString("Score: 0");
 
     waveActive = false;
     nextWaveScore = 1500;
@@ -185,15 +226,23 @@ void Game::processEvents()
             window.close();
     }
 
-    if (gameover && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-        reset();
+    if (currentState == GameState::Main_Menu)
+    {
+        mainMenu.HandleClick(sf::Vector2f(sf::Mouse::getPosition(window)));
+	}
 
-    if (gameover && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-        window.close();
+    if (currentState == GameState::Game_Over || currentState == GameState::win)
+    {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+            reset();
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+            window.close();
+    }
 }
 
 void Game::update()
-{
+{  
     float deltaTime = clock.restart().asSeconds();
 
     if (player.isGrabbed)
@@ -209,9 +258,32 @@ void Game::update()
         {
             player.resistance -= 0.5f;
         }
+    switch (currentState)
+    {
+    case GameState::Main_Menu:
+            mainMenu.update(sf::Vector2f(sf::Mouse::getPosition(window)));
+            break;
+       
+    case GameState::Play:
+        
 
-        player.resistance = std::clamp(player.resistance, 0.f, player.resistanceMax);
-    }
+
+        if (player.isGrabbed)
+        {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+            {
+                player.resistance += 1.5f;
+            }
+            else
+            {
+                player.resistance -= 0.5f;
+            }
+
+            player.resistance = std::clamp(player.resistance, 0.f, player.resistanceMax);
+        }
 
     float slow = 1.f - (player.resistance / player.resistanceMax) * player.slowFactor;
 
@@ -239,41 +311,76 @@ void Game::update()
     {
         player.setPose(wave->getPosition() + player.grabOffset);
 
-        if (player.resistance >= player.resistanceMax)
-        {
-            player.isGrabbed = false;
-            player.resistance = 0.f;
+            if (player.resistance >= player.resistanceMax)
+            {
+                player.isGrabbed = false;
+                player.resistance = 0.f;
+            }
         }
-    }
 
     float cameraTriggerY = screen_height * 0.4f;
 
-    if (player.getPose().y < cameraTriggerY)
-    {
-        float offset = cameraTriggerY - player.getPose().y;
+        if (player.getPose().y < cameraTriggerY)
+        {
+            float offset = cameraTriggerY - player.getPose().y;
 
-        player.setPose({ player.getPose().x, cameraTriggerY });
+            player.setPose({ player.getPose().x, cameraTriggerY });
 
-        for (auto& p : platforms)
-            p.setPosition({ p.getPosition().x, p.getPosition().y + offset });
+            for (auto& p : platforms)
+                p.setPosition({ p.getPosition().x, p.getPosition().y + offset });
 
-        sf::IntRect rect = background.getTextureRect();
-        rect.position.y -= offset;
+            sf::IntRect rect = background.getTextureRect();
+            rect.position.y -= offset;
 
-        if (rect.position.y < 0)
-            rect.position.y = 0;
+            if (rect.position.y < 0)
+                rect.position.y = 0;
 
-        background.setTextureRect(rect);
+            background.setTextureRect(rect);
 
-        score += static_cast<int>(offset);
-    }
+            score += static_cast<int>(offset);
+        }
 
-    player.warp();
+        player.warp();
 
-    if (player.getPose().y > screen_height)
-        gameover = true;
+        if (player.getPose().y > screen_height)
+        {
+            currentState = GameState::Game_Over;
+        }
 
-    scoreText.setString("Score: " + std::to_string(score));
+        if (score >= 30000)
+        {
+            currentState = GameState::win;
+        }
+
+        if (score - lastEnemyScore >= SCORE_SPAWN_ENEMY)
+        {
+            lastEnemyScore = score;
+
+            spawnEnemy(-50.f, EnemyType::Static);
+            spawnEnemy(-550.f, EnemyType::Moving);
+        }
+
+        for (auto& enemy : enemies)
+        {
+            enemy->update(deltaTime);
+
+
+            if (enemy->isActive() && player.getBounds().findIntersection(enemy->getBounds()))
+            {
+                currentState = GameState::Game_Over;
+
+            }
+        }
+
+        for (size_t i = 0; i < enemies.size(); )
+        {
+            if (enemies[i]->getPosition().y > screen_height + 100.f)
+                enemies.erase(enemies.begin() + i);
+            else
+                ++i;
+        }
+
+        scoreText.setString("Score: " + std::to_string(score));
 
     if (!waveActive && score >= nextWaveScore)
     {
@@ -288,6 +395,33 @@ void Game::update()
         {
             waveActive = false;
         }
+
+        if (wave->isOffScreen(screen_width))
+        {
+            wave = Wave(waveTexture, { 1200.f, 400.f }, { -250.f, 0.f });
+        };
+
+        break;
+	}
+
+    scoreText.setString("Score: " + std::to_string(score));
+}
+
+void Game::checkEnemyCollisions()
+{
+    sf::FloatRect playerBounds(
+        player.hitbox.getPosition(),
+        player.hitbox.getSize()
+    );
+
+    for (auto& enemy : enemies)
+    {
+        if (enemy->isActive() && playerBounds.findIntersection(enemy->getBounds()))
+        {
+            
+            currentState = GameState::Game_Over;
+            return;
+        }
     }
 }
 
@@ -295,45 +429,44 @@ void Game::render()
 {
     window.clear();
 
-    window.draw(background);
+    switch (currentState)
+    {
+    case GameState::Main_Menu:
 
-    for (const auto& platform : platforms)
-        platform.draw(window);
+        mainMenu.display();
+        mainMenu.update({ 0,0 });
+        mainMenu.draw(window);
+        break;
+
+    case GameState::Play:
+
+        window.draw(background);
+
+        for (const auto& platform : platforms)
+            platform.draw(window);
 
     if (waveActive)
         wave->draw(window);
 
     player.draw(window);
+        for (auto& enemy : enemies)
+            enemy->draw(window);
 
-    window.draw(scoreText);
+        wave->draw(window);
+        player.draw(window);
 
-    if (gameover)
-    {
-        sf::RectangleShape gameoverBackground(sf::Vector2f(1080, 1080));
-        gameoverBackground.setFillColor(sf::Color::Black);
+        window.draw(scoreText);
 
-        sf::Text gameOverText(font);
-        gameOverText.setString("GAME OVER");
-        gameOverText.setCharacterSize(80);
-        gameOverText.setPosition({ 300,300 });
-        gameOverText.setFillColor(sf::Color::Red);
+        break;
 
-        sf::Text resetText(font);
-        resetText.setString("Press Spacebar to reset");
-        resetText.setCharacterSize(40);
-        resetText.setPosition({ 350,600 });
-        resetText.setFillColor(sf::Color::Blue);
+    case GameState::Game_Over:
 
-        sf::Text closeText(font);
-        closeText.setString("Press Escape to quit");
-        closeText.setCharacterSize(40);
-        closeText.setPosition({ 350,800 });
-        closeText.setFillColor(sf::Color::Green);
+        defeat.draw(window);
+        break;
 
-        window.draw(gameoverBackground);
-        window.draw(gameOverText);
-        window.draw(resetText);
-        window.draw(closeText);
+    case GameState::win:
+
+        win.draw(window);
     }
 
     window.display();
